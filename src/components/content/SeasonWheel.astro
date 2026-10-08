@@ -1,0 +1,143 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import { MONTH_SHORT } from "@/utils/fruit.ts";
+
+interface Props extends HTMLAttributes<"figure"> {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** Months the product is available, 1 to 12. */
+  months: number[];
+  /** Short season label shown in the centre. */
+  label: string;
+  /** Accessible description of the season. */
+  description: string;
+}
+
+const {
+  render = true,
+  months,
+  label,
+  description,
+  class: className,
+  ...rest
+} = Astro.props;
+
+const GAP = 1.6;
+const OUTER = 96;
+const INNER = 60;
+const CENTER = 100;
+
+const point = (radius: number, angle: number) =>
+  `${(CENTER + radius * Math.cos(angle)).toFixed(2)} ${(CENTER + radius * Math.sin(angle)).toFixed(2)}`;
+
+const segments = Array.from({ length: 12 }, (_, index) => {
+  const start = ((-90 + index * 30 + GAP) * Math.PI) / 180;
+  const end = ((-90 + (index + 1) * 30 - GAP) * Math.PI) / 180;
+  return {
+    month: index + 1,
+    path: `M ${point(OUTER, start)} A ${OUTER} ${OUTER} 0 0 1 ${point(OUTER, end)} L ${point(INNER, end)} A ${INNER} ${INNER} 0 0 0 ${point(INNER, start)} Z`,
+    on: months.includes(index + 1),
+  };
+});
+---
+
+{
+  render && (
+    <figure class:list={["wheel_wrap", className]} {...rest}>
+      <div class="wheel_dial">
+        <svg
+          class="wheel_svg"
+          viewBox="0 0 200 200"
+          role="img"
+          aria-label={description}
+        >
+          {segments.map((segment) => (
+            <path
+              class:list={["wheel_segment", segment.on && "on"]}
+              d={segment.path}
+              data-month={segment.month}
+            />
+          ))}
+        </svg>
+        <div class="wheel_centre" aria-hidden="true">
+          <span class="wheel_kicker text-style-small">Available</span>
+          <span class="wheel_label text-style-h5">
+            <em>{label}</em>
+          </span>
+        </div>
+        <span class="wheel_start text-style-small" aria-hidden="true">
+          {MONTH_SHORT[0]}
+        </span>
+      </div>
+      <figcaption class="wheel_caption text-style-small">
+        Season wheel
+      </figcaption>
+    </figure>
+  )
+}
+
+<style is:global>
+  @layer components {
+    .wheel_wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-2);
+      width: 12.5rem;
+    }
+
+    .wheel_dial {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1;
+    }
+
+    .wheel_svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .wheel_segment {
+      fill: var(--light-200);
+      transition: fill var(--hover-duration) var(--hover-ease);
+
+      &.on {
+        fill: var(--_family);
+      }
+    }
+
+    .wheel_centre {
+      position: absolute;
+      inset: 30%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .wheel_kicker {
+      font-weight: var(--secondary-bold);
+      letter-spacing: var(--letter-spacing-eyebrow);
+      text-transform: uppercase;
+      color: var(--text-2);
+    }
+
+    .wheel_label {
+      font-weight: var(--primary-bold);
+    }
+
+    .wheel_start {
+      position: absolute;
+      top: calc(var(--space-4) * -1);
+      left: 50%;
+      translate: -50% 0;
+      color: var(--text-2);
+      font-weight: var(--secondary-semibold);
+    }
+
+    .wheel_caption {
+      color: var(--text-2);
+    }
+  }
+</style>

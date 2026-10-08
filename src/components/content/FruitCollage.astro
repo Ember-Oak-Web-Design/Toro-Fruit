@@ -1,0 +1,277 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Img from "@/components/media/Img.astro";
+
+type Swatch =
+  | "light-100"
+  | "light-300"
+  | "sun-500"
+  | "leaf-400"
+  | "leaf-500"
+  | "brand-500"
+  | "berry-400"
+  | "berry-500"
+  | "forest-700"
+  | "dark-900";
+
+type Anchor = "top-left" | "top-right" | "bottom-left" | "bottom-right";
+
+type Placement = {
+  /** Offset from the anchored edge, in design units. */
+  x: number;
+  /** Offset from the anchored edge, in design units. */
+  y: number;
+  /** Corner the offsets are measured from. */
+  anchor?: Anchor;
+  /** Turn in degrees. */
+  rotate?: number;
+};
+
+type Layer =
+  | (Placement & { type: "circle"; color: Swatch; d: number })
+  | (Placement & {
+      type: "cutout";
+      src: ImageMetadata;
+      alt?: string;
+      /** Width in design units. Height follows the image. */
+      w: number;
+    })
+  | (Placement & {
+      type: "photo";
+      src: ImageMetadata;
+      alt?: string;
+      w: number;
+      h: number;
+      /** Crop to a circle. */
+      round?: boolean;
+      /** Border in design units, drawn in the surrounding background. */
+      border?: number;
+    })
+  | (Placement & {
+      type: "badge";
+      text: string;
+      color: Swatch;
+      d: number;
+    });
+
+interface Props extends HTMLAttributes<"div"> {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** Layers from back to front, measured in the design frame. */
+  layers: Layer[];
+  /** Design frame as `[width, height]`. Defaults to `[600, 600]`. */
+  frame?: [number, number];
+  /** `backdrop` fills its parent as decoration and hides on small screens. */
+  variant?: "plate" | "backdrop";
+  /** Load images straight away, for collages at the top of a page. */
+  eager?: boolean;
+  /** Hide the layers on narrow screens, for decoration that sits behind copy. */
+  hideNarrow?: boolean;
+}
+
+const {
+  render = true,
+  layers,
+  frame = [600, 600],
+  variant = "plate",
+  eager = false,
+  hideNarrow = false,
+  class: className,
+  ...rest
+} = Astro.props;
+
+const place = (layer: Layer) => {
+  const anchor = layer.anchor ?? "top-left";
+  const [vertical, horizontal] = anchor.split("-");
+  const size =
+    layer.type === "circle" || layer.type === "badge"
+      ? { w: layer.d, h: layer.d }
+      : layer.type === "cutout"
+        ? {
+            w: layer.w,
+            h: layer.w * (layer.src.height / layer.src.width),
+          }
+        : { w: layer.w, h: layer.h };
+  return {
+    class: ["collage_layer", layer.type, horizontal, vertical],
+    style: [
+      `--_x: ${layer.x}`,
+      `--_y: ${layer.y}`,
+      `--_lw: ${size.w}`,
+      `--_lh: ${size.h}`,
+      layer.rotate ? `--_r: ${layer.rotate}deg` : "",
+      layer.type === "circle" || layer.type === "badge"
+        ? `--_fill: var(--${layer.color})`
+        : "",
+      layer.type === "photo" && layer.border
+        ? `--_border: ${layer.border}`
+        : "",
+    ]
+      .filter(Boolean)
+      .join("; "),
+  };
+};
+---
+
+{
+  render && (
+    <div
+      class:list={[
+        "collage_wrap",
+        variant === "backdrop" && "backdrop",
+        hideNarrow && "hide-narrow",
+        className,
+      ]}
+      style={`--_w: ${frame[0]}; --_h: ${frame[1]}`}
+      aria-hidden={variant === "backdrop" ? "true" : undefined}
+      {...rest}
+    >
+      <div class="collage_stage">
+        {layers.map((layer) => {
+          const { class: layerClass, style } = place(layer);
+          return (
+            <div
+              class:list={[
+                layerClass,
+                layer.type === "photo" && layer.round && "round",
+              ]}
+              style={style}
+            >
+              {layer.type === "badge" && (
+                <span class="collage_badge_text">{layer.text}</span>
+              )}
+              {layer.type === "cutout" && (
+                <Img
+                  class="collage_image"
+                  src={layer.src}
+                  alt={layer.alt}
+                  transparent
+                  loading={eager ? "eager" : "lazy"}
+                  variant="constrained"
+                  sizes="(min-width: 64rem) 24rem, 60vw"
+                />
+              )}
+              {layer.type === "photo" && (
+                <Img
+                  class="collage_image"
+                  src={layer.src}
+                  alt={layer.alt}
+                  loading={eager ? "eager" : "lazy"}
+                  variant="constrained"
+                  sizes="(min-width: 64rem) 30rem, 70vw"
+                />
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  )
+}
+
+<style is:global>
+  @layer components {
+    .collage_wrap {
+      width: 100%;
+      position: relative;
+      container-type: inline-size;
+      aspect-ratio: var(--_w) / var(--_h);
+      /* The artboard's own box takes no cqw: those resolve against an
+         ancestor, so everything measured in them sits on the stage inside. */
+
+      &.backdrop {
+        position: absolute;
+        inset: 0;
+        height: 100%;
+        aspect-ratio: auto;
+        pointer-events: none;
+        overflow: clip;
+      }
+    }
+
+    .collage_stage {
+      --_u: calc(100cqw / var(--_w));
+      position: absolute;
+      inset: 0;
+    }
+
+    .collage_layer {
+      position: absolute;
+      width: calc(var(--_lw) * var(--_u));
+      height: calc(var(--_lh) * var(--_u));
+      rotate: var(--_r, 0deg);
+
+      &.top {
+        top: calc(var(--_y) * var(--_u));
+      }
+      &.bottom {
+        bottom: calc(var(--_y) * var(--_u));
+      }
+      &.left {
+        left: calc(var(--_x) * var(--_u));
+      }
+      &.right {
+        right: calc(var(--_x) * var(--_u));
+      }
+
+      &.circle,
+      &.badge {
+        background-color: var(--_fill);
+        border-radius: var(--radius-round);
+      }
+
+      &.cutout {
+        filter: drop-shadow(
+          0 calc(var(--_u) * 22) calc(var(--_u) * 26)
+            color-mix(in srgb, var(--shadow-500) 30%, transparent)
+        );
+      }
+
+      &.photo {
+        border: calc(var(--_u) * var(--_border, 0)) solid var(--background);
+        border-radius: calc(var(--_u) * 32);
+        overflow: clip;
+        box-shadow: 0 calc(var(--_u) * 22) calc(var(--_u) * 26)
+          color-mix(in srgb, var(--shadow-500) 30%, transparent);
+
+        &.round {
+          border-radius: var(--radius-round);
+        }
+      }
+
+      &.badge {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: var(--border-width) solid var(--text);
+        text-align: center;
+        color: var(--dark-900);
+      }
+    }
+
+    .collage_badge_text {
+      font-family: var(--h5-font-family);
+      font-style: italic;
+      font-weight: var(--primary-bold);
+      font-size: calc(var(--_u) * 22);
+      line-height: 1.05;
+      white-space: pre-line;
+    }
+
+    .collage_image {
+      width: 100%;
+      height: 100%;
+    }
+
+    .collage_layer.photo .collage_image {
+      object-fit: cover;
+    }
+
+    /* Decoration that sits behind copy has no room on a narrow screen. */
+    @container (width < 48rem) {
+      .collage_wrap.hide-narrow .collage_layer {
+        display: none;
+      }
+    }
+  }
+</style>

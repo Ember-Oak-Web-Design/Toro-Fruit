@@ -1,0 +1,106 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+
+type Accent = "brand-500" | "sun-500" | "leaf-500";
+
+interface Props extends HTMLAttributes<"li"> {
+  /** HTML element. Use `div` outside a list. */
+  tag?: "li" | "div";
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** Step number, as shown. */
+  number: string;
+  /** Step title. */
+  heading: string;
+  /** Step text. */
+  text: string;
+  /** Circle colour. */
+  accent?: Accent;
+  /** Layout. */
+  variant?: "row" | "card";
+}
+
+const {
+  render = true,
+  tag: Tag = "li",
+  number,
+  heading,
+  text,
+  accent = "brand-500",
+  variant = "row",
+  class: className,
+  ...rest
+} = Astro.props;
+---
+
+{
+  render && (
+    <Tag
+      class:list={["step_wrap", variant === "card" && "card", className]}
+      style={`--_accent: var(--${accent})`}
+      {...rest}
+    >
+      <span class="step_number text-style-h5" aria-hidden="true">
+        {number}
+      </span>
+      <div class="step_content margin-trim">
+        <Heading tag="h3" variant="large" class="weight-bold">
+          {heading}
+        </Heading>
+        <Paragraph variant="small">{text}</Paragraph>
+      </div>
+    </Tag>
+  )
+}
+
+<style is:global>
+  @layer components {
+    .step_wrap {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-4);
+      padding-block: var(--space-4);
+      border-top: var(--border-width-thin) solid var(--border);
+
+      &:last-child {
+        border-bottom: var(--border-width-thin) solid var(--border);
+      }
+
+      &.card {
+        flex-direction: column;
+        gap: var(--space-3);
+        padding: var(--space-5);
+        background-color: var(--background-3);
+        border: 0;
+        border-radius: var(--radius-large);
+
+        &:last-child {
+          border-bottom: 0;
+        }
+      }
+    }
+
+    .step_number {
+      flex: none;
+      display: grid;
+      place-items: center;
+      width: var(--media-icon-circle);
+      aspect-ratio: 1;
+      background-color: var(--_accent);
+      color: var(--dark-900);
+      border-radius: var(--radius-round);
+    }
+
+    .step_content {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1);
+
+      .text {
+        color: var(--text-2);
+      }
+    }
+  }
+</style>

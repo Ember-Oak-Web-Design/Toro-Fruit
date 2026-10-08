@@ -1,0 +1,22 @@
+---
+import Layout from "@/layouts/BaseLayout.astro";
+import Section from "@/components/wrapper/Section.astro";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import { CONTACT_EMAIL } from "@/consts.ts";
+---
+
+<Layout
+  title="Privacy policy"
+  description="How Toro Fruit handles the information you share when you contact us."
+>
+  <Section theme="light" paddingTop="small">
+    <Heading tag="h1" variant="h2">Privacy policy</Heading>
+    <Paragraph variant="large" maxWidth={44}>
+      Our full privacy policy is being finalised and will be published here
+      before launch. In the meantime, the details you send through our enquiry
+      form are used only to reply to your enquiry. For any question about your
+      information, email {CONTACT_EMAIL}.
+    </Paragraph>
+  </Section>
+</Layout>

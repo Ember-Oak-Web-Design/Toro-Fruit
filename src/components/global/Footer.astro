@@ -1,7 +1,7 @@
 ---
-import Icon from "@/components/media/Icon.astro";
-import logo from "@/assets/logo/logo.svg";
-import { SITE_NAME } from "@/consts.ts";
+import Img from "@/components/media/Img.astro";
+import logo from "@/assets/logo/toro-fruit.png";
+import { CONTACT_EMAIL, SITE_NAME } from "@/consts.ts";
 
 interface Props {
   /** Set to `false` to omit the component. */
@@ -9,36 +9,78 @@ interface Props {
 }
 
 const { render = true } = Astro.props;
+
+const columns = [
+  {
+    title: "Products",
+    links: [
+      { label: "Fresh fruit", href: "/products/fresh-fruit/" },
+      { label: "Frozen fruit", href: "/products/frozen-fruit/" },
+    ],
+  },
+  {
+    title: "Company",
+    links: [
+      { label: "About us", href: "/about-us/" },
+      {
+        label: "Food safety & sustainability",
+        href: "/food-safety-sustainability/",
+      },
+      { label: "Contact", href: "/contact/" },
+    ],
+  },
+  {
+    title: "Get in touch",
+    links: [{ label: CONTACT_EMAIL, href: `mailto:${CONTACT_EMAIL}` }],
+  },
+];
 ---
 
 {
   render && (
-    <footer class="footer_wrap">
+    <footer class="footer_wrap theme-dark">
       <div class="footer_inner">
         <div class="footer_top">
-          <a class="footer_logo" href="/" aria-label={SITE_NAME}>
-            <Icon src={logo} variant="full-width" />
-          </a>
-          <nav aria-label="Footer">
-            <ul class="footer_links">
-              <li>
-                <a class="footer_link" href="/">
-                  Home
-                </a>
-              </li>
-              <li>
-                <a class="footer_link" href="/example-components">
-                  Example Components
-                </a>
-              </li>
-            </ul>
+          <div class="footer_brand">
+            <a class="footer_logo" href="/" aria-label={SITE_NAME}>
+              <Img
+                src={logo}
+                alt=""
+                transparent
+                variant="constrained"
+                sizes="8rem"
+              />
+            </a>
+            <p class="footer_tagline text-style-small">
+              Fresh and frozen fruit from certified South African growers,
+              exported to importers worldwide.
+            </p>
+          </div>
+          <nav class="footer_nav" aria-label="Footer">
+            {columns.map((column) => (
+              <div class="footer_column">
+                <p class="footer_heading text-style-small">{column.title}</p>
+                <ul class="footer_links">
+                  {column.links.map((link) => (
+                    <li>
+                      <a class="footer_link" href={link.href}>
+                        {link.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
           </nav>
         </div>
-        <div class="footer_bottom">
-          <p class="footer_copyright text-style-small">
+        <div class="footer_bottom text-style-small">
+          <p class="footer_copyright">
             &copy; <span id="year">{new Date().getFullYear()}</span>&#160;
-            {SITE_NAME}
+            {SITE_NAME}. All rights reserved.
           </p>
+          <a class="footer_link" href="/privacy-policy/">
+            Privacy policy
+          </a>
         </div>
       </div>
     </footer>
@@ -58,11 +100,10 @@ const { render = true } = Astro.props;
     .footer_wrap {
       display: flex;
       justify-content: center;
-      padding-block: var(--section-space-small);
+      padding-block: var(--section-space-small) var(--space-6);
       padding-inline: var(--site-margin);
       background-color: var(--background);
       color: var(--text);
-      border-top: var(--border-width) solid var(--border);
     }
 
     .footer_inner {
@@ -70,21 +111,71 @@ const { render = true } = Astro.props;
       max-width: var(--max-width-main);
       display: flex;
       flex-direction: column;
-      gap: var(--space-6);
+      gap: var(--space-8);
     }
 
     .footer_top {
       display: flex;
       flex-wrap: wrap;
-      align-items: center;
       justify-content: space-between;
-      gap: var(--space-4) var(--space-6);
+      gap: var(--space-7) var(--space-8);
+    }
+
+    .footer_brand {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--space-4);
+      max-width: 22rem;
     }
 
     .footer_logo {
       display: block;
-      width: 7.5rem;
-      max-width: 100%;
+      width: calc(7.75rem + var(--space-4) * 2);
+      padding: var(--space-3) var(--space-4);
+      background-color: var(--light-300);
+      border-radius: var(--radius-main);
+      transition: opacity var(--hover-duration) var(--hover-ease);
+      @media (hover: hover) {
+        &:hover {
+          opacity: 0.8;
+        }
+      }
+    }
+
+    .footer_tagline {
+      color: var(--text-2);
+    }
+
+    .footer_nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-7) var(--space-8);
+    }
+
+    .footer_column {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+    }
+
+    .footer_heading {
+      color: var(--heading-accent);
+      font-weight: var(--secondary-bold);
+      letter-spacing: var(--letter-spacing-eyebrow);
+      text-transform: uppercase;
+    }
+
+    .footer_links {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+      font-size: var(--text-small);
+    }
+
+    .footer_link {
+      color: var(--text);
+      text-decoration: none;
       transition: opacity var(--hover-duration) var(--hover-ease);
       @media (hover: hover) {
         &:hover {
@@ -93,33 +184,18 @@ const { render = true } = Astro.props;
       }
     }
 
-    .footer_links {
+    .footer_bottom {
       display: flex;
       flex-wrap: wrap;
-      align-items: center;
-      gap: var(--space-4);
-      font-size: var(--text-small);
-      font-weight: var(--primary-medium);
-    }
-
-    .footer_link {
-      color: var(--text-2);
-      text-decoration: none;
-      transition: color var(--hover-duration) var(--hover-ease);
-      @media (hover: hover) {
-        &:hover {
-          color: var(--text);
-        }
-      }
-    }
-
-    .footer_bottom {
+      justify-content: space-between;
+      gap: var(--space-3) var(--space-6);
       padding-top: var(--space-4);
-      border-top: var(--border-width) solid var(--border);
-    }
-
-    .footer_copyright {
+      border-top: var(--border-width-thin) solid var(--border);
       color: var(--text-2);
+
+      .footer_link {
+        color: var(--text-2);
+      }
     }
   }
 </style>

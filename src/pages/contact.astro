@@ -1,0 +1,129 @@
+---
+import Layout from "@/layouts/BaseLayout.astro";
+import Section from "@/components/wrapper/Section.astro";
+import ContentWrapper from "@/components/wrapper/ContentWrapper.astro";
+import Grid from "@/components/wrapper/Grid.astro";
+import Eyebrow from "@/components/typography/Eyebrow.astro";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import Button from "@/components/Button.astro";
+import FruitCollage from "@/components/content/FruitCollage.astro";
+import Callout from "@/components/content/Callout.astro";
+import ContactForm from "@/components/content/ContactForm.astro";
+import SectionHeader from "@/components/content/SectionHeader.astro";
+import Step from "@/components/content/Step.astro";
+import building from "@/assets/icons/building.svg";
+import { CONTACT_EMAIL } from "@/consts.ts";
+import { fruitImage } from "@/utils/fruit.ts";
+---
+
+<Layout
+  title="Contact our export team"
+  description="Send an enquiry to Toro Fruit's export team. Tell us your company, region and the products you need, and we'll come back to you if it's a good fit."
+  breadcrumbs={[
+    { name: "Home", href: "/" },
+    { name: "Contact", href: "/contact/" },
+  ]}
+>
+  {/* Enquiry */}
+  <Section theme="light" paddingTop="small">
+    <FruitCollage
+      slot="background"
+      variant="backdrop"
+      hideNarrow
+      frame={[1440, 1200]}
+      layers={[
+        {
+          type: "circle",
+          color: "sun-500",
+          x: -160,
+          y: -280,
+          anchor: "bottom-left",
+          d: 520,
+        },
+        {
+          type: "cutout",
+          src: fruitImage("lemons"),
+          alt: "",
+          x: 40,
+          y: 90,
+          anchor: "bottom-left",
+          w: 300,
+          rotate: -10,
+        },
+        {
+          type: "cutout",
+          src: fruitImage("strawberries"),
+          alt: "",
+          x: 230,
+          y: 20,
+          anchor: "bottom-left",
+          w: 250,
+          rotate: 8,
+        },
+      ]}
+    />
+    <ContentWrapper variant="columns" column1Class="align-self-start">
+      <Fragment>
+        <Eyebrow>Contact</Eyebrow>
+        <Heading tag="h1">Let’s talk <em>fruit.</em></Heading>
+        <Paragraph variant="large" maxWidth={36}>
+          Tell us about your business and what you’re looking for. Our export
+          team reviews every enquiry and will come back to you if it’s a good
+          fit.
+        </Paragraph>
+        <Callout
+          class="margin-top-4"
+          icon={building}
+          heading="We work with businesses"
+          text="Toro Fruit supplies importers, wholesalers, retailers and processors. We’re unable to take orders from private individuals."
+        />
+        <div class="margin-top-4">
+          <Eyebrow>Prefer email?</Eyebrow>
+          <Paragraph variant="h4">
+            <Button
+              variant="link"
+              element="link"
+              href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</Button
+            >
+          </Paragraph>
+        </div>
+      </Fragment>
+      <ContactForm slot="column2" />
+    </ContentWrapper>
+  </Section>
+
+  {/* What happens next */}
+  <Section theme="light" class="background-2">
+    <SectionHeader
+      eyebrow="What happens next"
+      heading="From enquiry to <em>first shipment.</em>"
+    />
+    <Grid medium={3}>
+      <Step
+        tag="div"
+        variant="card"
+        number="01"
+        accent="brand-500"
+        heading="You send an enquiry"
+        text="Tell us who you are, where you’re based and which products you need."
+      />
+      <Step
+        tag="div"
+        variant="card"
+        number="02"
+        accent="sun-500"
+        heading="We review the fit"
+        text="Our export team checks availability against your market, volumes and timing."
+      />
+      <Step
+        tag="div"
+        variant="card"
+        number="03"
+        accent="leaf-500"
+        heading="We come back to you"
+        text="If it’s a good fit, we’ll reply with availability, pricing and next steps."
+      />
+    </Grid>
+  </Section>
+</Layout>

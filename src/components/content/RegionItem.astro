@@ -1,0 +1,41 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+
+interface Props extends HTMLAttributes<"div"> {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** Region name. */
+  heading: string;
+  /** Short line under the name. */
+  text?: string;
+}
+
+const { render = true, heading, text, class: className, ...rest } = Astro.props;
+---
+
+{
+  render && (
+    <div class:list={["region_wrap", className]} {...rest}>
+      <Heading tag="h3" variant="h3">
+        {heading}
+      </Heading>
+      <Paragraph render={!!text} variant="small">
+        {text}
+      </Paragraph>
+    </div>
+  )
+}
+
+<style is:global>
+  @layer components {
+    .region_wrap {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1);
+      padding-top: var(--space-4);
+      border-top: var(--border-width) solid var(--border);
+    }
+  }
+</style>

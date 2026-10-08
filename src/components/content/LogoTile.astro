@@ -1,0 +1,93 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Img from "@/components/media/Img.astro";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+
+interface Props extends HTMLAttributes<"div"> {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** Logo image. */
+  logo: ImageMetadata;
+  /** Alt text for the logo. */
+  alt: string;
+  /** Name shown under the tile. Omit for the tile alone. */
+  name?: string;
+  /** Short description under the name. */
+  detail?: string;
+  /** Logo width in rem. Defaults to `10`. */
+  logoWidth?: number;
+}
+
+const {
+  render = true,
+  logo,
+  alt,
+  name,
+  detail,
+  logoWidth = 10,
+  class: className,
+  ...rest
+} = Astro.props;
+---
+
+{
+  render && (
+    <div class:list={["logotile_wrap", className]} {...rest}>
+      <div class="logotile_box">
+        <Img
+          class="logotile_logo"
+          src={logo}
+          alt={alt}
+          transparent
+          variant="constrained"
+          sizes={`${logoWidth}rem`}
+          style={`--_logo-width: ${logoWidth}rem`}
+        />
+      </div>
+      {name && (
+        <Heading tag="h3" variant="large" class="logotile_name weight-bold">
+          {name}
+        </Heading>
+      )}
+      <Paragraph render={!!detail} variant="small" class="logotile_detail">
+        {detail}
+      </Paragraph>
+    </div>
+  )
+}
+
+<style is:global>
+  @layer components {
+    .logotile_wrap {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+      width: 100%;
+    }
+
+    .logotile_box {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: var(--media-logo-tile);
+      padding: var(--space-4);
+      background-color: var(--background-3);
+      border-radius: var(--radius-large);
+    }
+
+    .logotile_logo {
+      width: var(--_logo-width);
+      max-height: calc(var(--media-logo-tile) - var(--space-4) * 2);
+      object-fit: contain;
+    }
+
+    .logotile_name {
+      margin-top: var(--space-2);
+    }
+
+    .logotile_detail {
+      color: var(--text-2);
+    }
+  }
+</style>

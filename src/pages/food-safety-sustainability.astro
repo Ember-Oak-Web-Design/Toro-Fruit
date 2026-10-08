@@ -1,0 +1,313 @@
+---
+import Layout from "@/layouts/BaseLayout.astro";
+import Section from "@/components/wrapper/Section.astro";
+import ContentWrapper from "@/components/wrapper/ContentWrapper.astro";
+import Grid from "@/components/wrapper/Grid.astro";
+import Eyebrow from "@/components/typography/Eyebrow.astro";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import HeroMain from "@/components/content/HeroMain.astro";
+import FruitCollage from "@/components/content/FruitCollage.astro";
+import SectionHeader from "@/components/content/SectionHeader.astro";
+import Tag from "@/components/content/Tag.astro";
+import LogoTile from "@/components/content/LogoTile.astro";
+import SectionCta from "@/components/section/SectionCta.astro";
+import globalgapBadge from "@/assets/logo/globalgap.jpg";
+import sizaSedex from "@/assets/logo/siza-sedex.jpg";
+import strawberryPicker from "@/assets/photos/strawberry-picker.jpg";
+import vineyard from "@/assets/photos/vineyard-wind-turbines.jpg";
+import { AFFILIATIONS, CERTIFICATIONS } from "@/data/site.ts";
+import { fruitImage } from "@/utils/fruit.ts";
+---
+
+<Layout
+  title="Food safety and sustainability"
+  description="All Toro Fruit produce comes from GlobalG.A.P.-certified growers who comply with MRL regulations, with ethical trading and environmental programmes across our grower base."
+  breadcrumbs={[
+    { name: "Home", href: "/" },
+    {
+      name: "Food safety & sustainability",
+      href: "/food-safety-sustainability/",
+    },
+  ]}
+>
+  {/* Hero */}
+  <Section theme="dark" paddingTop="small" paddingBottom="small">
+    <HeroMain
+      eyebrow="Food safety & sustainability"
+      heading="Good fruit starts with <em>good farming.</em>"
+      text="Every Toro Fruit shipment begins with growers who meet the standards that matter: safe food, fair working conditions and care for the land."
+      buttons={[
+        { label: "Our certifications", href: "#standards", icon: true },
+        { label: "Request a quote", href: "/contact/", emphasis: "secondary" },
+      ]}
+      trust={[
+        "GlobalG.A.P.-certified growers",
+        "MRL-compliant produce",
+        "SIZA & SEDEX accredited growers (most)",
+      ]}
+    >
+      <FruitCollage
+        slot="visual"
+        eager
+        layers={[
+          { type: "circle", color: "leaf-500", x: 40, y: 40, d: 520 },
+          { type: "circle", color: "brand-500", x: 0, y: 430, d: 90 },
+          { type: "circle", color: "berry-400", x: 520, y: 130, d: 56 },
+          {
+            type: "cutout",
+            src: fruitImage("golden-kiwi"),
+            alt: "Golden kiwifruit, halved",
+            x: 70,
+            y: 90,
+            w: 300,
+            rotate: -8,
+          },
+          {
+            type: "cutout",
+            src: fruitImage("cherries"),
+            alt: "Cherries",
+            x: 350,
+            y: 70,
+            w: 190,
+            rotate: 10,
+          },
+          {
+            type: "cutout",
+            src: fruitImage("kumquats"),
+            alt: "Kumquats",
+            x: 300,
+            y: 340,
+            w: 270,
+            rotate: -6,
+          },
+          {
+            type: "cutout",
+            src: fruitImage("grapes"),
+            alt: "Table grapes",
+            x: 70,
+            y: 380,
+            w: 250,
+            rotate: 6,
+          },
+          {
+            type: "badge",
+            text: "GlobalG.A.P.\ngrowers",
+            color: "sun-500",
+            x: 440,
+            y: 0,
+            d: 144,
+            rotate: 10,
+          },
+        ]}
+      />
+    </HeroMain>
+  </Section>
+
+  {/* Food safety */}
+  <Section theme="light">
+    <ContentWrapper variant="columns" reverse>
+      <Fragment>
+        <Eyebrow>Food safety</Eyebrow>
+        <Heading tag="h2"
+          >Certified growers, <em>compliant produce.</em></Heading
+        >
+        <Paragraph variant="large" maxWidth={38}>
+          All our produce comes from GlobalG.A.P.-certified growers, who comply
+          with MRL regulations.
+        </Paragraph>
+        <Eyebrow class="margin-top-5">Selected growers also hold</Eyebrow>
+        <ul class="flex-horizontal-wrap gap-2">
+          <li><Tag>Tesco Nurture</Tag></li>
+          <li><Tag>M&amp;S Field to Fork</Tag></li>
+          <li><Tag>BRC</Tag></li>
+          <li><Tag>HACCP</Tag></li>
+        </ul>
+      </Fragment>
+      <FruitCollage
+        slot="column2"
+        layers={[
+          { type: "circle", color: "leaf-500", x: 0, y: 60, d: 110 },
+          { type: "circle", color: "sun-500", x: 470, y: 430, d: 90 },
+          {
+            type: "photo",
+            src: globalgapBadge,
+            alt: "GlobalG.A.P. logo",
+            x: 40,
+            y: 40,
+            w: 480,
+            h: 480,
+            round: true,
+          },
+          {
+            type: "cutout",
+            src: fruitImage("golden-kiwi"),
+            alt: "",
+            x: 330,
+            y: 360,
+            w: 200,
+            rotate: 12,
+          },
+        ]}
+      />
+    </ContentWrapper>
+  </Section>
+
+  {/* Social responsibility */}
+  <Section theme="brand" class="background-2">
+    <ContentWrapper variant="columns">
+      <FruitCollage
+        layers={[
+          { type: "circle", color: "brand-500", x: 440, y: 40, d: 110 },
+          { type: "circle", color: "berry-500", x: 10, y: 440, d: 80 },
+          {
+            type: "photo",
+            src: strawberryPicker,
+            alt: "A grower picking strawberries in the field",
+            x: 40,
+            y: 40,
+            w: 480,
+            h: 480,
+            round: true,
+          },
+        ]}
+      />
+      <Fragment slot="column2">
+        <Eyebrow>Social responsibility</Eyebrow>
+        <Heading tag="h2">Safe, healthy and <em>happy workplaces.</em></Heading>
+        <Paragraph variant="large" maxWidth={38}>
+          We pride ourselves on sourcing produce from growers who create safe,
+          healthy and happy working environments for their workers.
+        </Paragraph>
+        <Paragraph variant="main" maxWidth={44}>
+          Most of our growers hold SIZA or SEDEX accreditation and comply with
+          national ethical trading standards.
+        </Paragraph>
+        <LogoTile
+          class="margin-top-4"
+          logo={sizaSedex}
+          alt="SIZA and SEDEX"
+          logoWidth={18}
+        />
+      </Fragment>
+    </ContentWrapper>
+  </Section>
+
+  {/* Environmental responsibility */}
+  <Section theme="light" class="background-2">
+    <ContentWrapper variant="columns">
+      <Fragment>
+        <Eyebrow>Environmental responsibility</Eyebrow>
+        <Heading tag="h2">Caring for the <em>land we grow on.</em></Heading>
+        <Paragraph variant="large" maxWidth={38}>
+          Our grower base takes part in programmes such as carbon footprint,
+          water stewardship and biodiversity.
+        </Paragraph>
+        <ul class="flex-horizontal-wrap gap-2 margin-top-4">
+          <li><Tag variant="filled">Carbon footprint</Tag></li>
+          <li><Tag variant="filled">Water stewardship</Tag></li>
+          <li><Tag variant="filled">Biodiversity</Tag></li>
+        </ul>
+      </Fragment>
+      <FruitCollage
+        slot="column2"
+        layers={[
+          { type: "circle", color: "sun-500", x: 440, y: 40, d: 100 },
+          { type: "circle", color: "leaf-500", x: 10, y: 430, d: 90 },
+          {
+            type: "photo",
+            src: vineyard,
+            alt: "A young vineyard beneath a rainbow, with wind turbines on the ridge",
+            x: 40,
+            y: 40,
+            w: 480,
+            h: 480,
+            round: true,
+          },
+          {
+            type: "cutout",
+            src: fruitImage("grapes"),
+            alt: "",
+            x: 360,
+            y: 380,
+            w: 200,
+            rotate: -10,
+          },
+        ]}
+      />
+    </ContentWrapper>
+  </Section>
+
+  {/* Standards and affiliations */}
+  <Section theme="light" id="standards">
+    <SectionHeader
+      eyebrow="Standards & affiliations"
+      heading="The standards we <em>stand behind.</em>"
+    />
+    <Eyebrow>Certifications</Eyebrow>
+    <Grid medium={2} class="margin-top-0">
+      {
+        CERTIFICATIONS.map((item) => (
+          <LogoTile
+            logo={item.logo}
+            alt={item.alt}
+            name={item.name}
+            detail={item.detail}
+            logoWidth={item.width}
+          />
+        ))
+      }
+    </Grid>
+    <Eyebrow>Industry affiliations</Eyebrow>
+    <Grid medium={2}>
+      {
+        AFFILIATIONS.map((item) => (
+          <LogoTile
+            logo={item.logo}
+            alt={item.alt}
+            name={item.name}
+            detail={item.detail}
+            logoWidth={item.width}
+          />
+        ))
+      }
+    </Grid>
+  </Section>
+
+  <SectionCta
+    theme="brand"
+    heading="Questions about our standards? <em>Let’s talk.</em>"
+    text="Ask our team about certifications, traceability or how we work with our growers."
+    secondary={{ label: "Contact us", href: "/contact/" }}
+    frameHeight={520}
+    layers={[
+      {
+        type: "cutout",
+        src: fruitImage("cherries"),
+        x: 70,
+        y: 40,
+        anchor: "top-right",
+        w: 170,
+        rotate: -14,
+      },
+      {
+        type: "cutout",
+        src: fruitImage("kumquats"),
+        x: -20,
+        y: -40,
+        anchor: "bottom-left",
+        w: 280,
+        rotate: 10,
+      },
+      {
+        type: "cutout",
+        src: fruitImage("grapes"),
+        x: 190,
+        y: -60,
+        anchor: "bottom-right",
+        w: 240,
+        rotate: -8,
+      },
+    ]}
+  />
+</Layout>

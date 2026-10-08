@@ -1,7 +1,10 @@
 ---
 import Icon from "@/components/media/Icon.astro";
+import Img from "@/components/media/Img.astro";
+import Button from "@/components/Button.astro";
 import NavLink from "@/components/global/NavLink.astro";
-import logo from "@/assets/logo/logo.svg";
+import chevron from "@/assets/icons/arrow.svg";
+import logo from "@/assets/logo/toro-fruit.png";
 import { SITE_NAME } from "@/consts.ts";
 
 interface Props {
@@ -12,6 +15,8 @@ interface Props {
 }
 
 const { render = true, overlap = false } = Astro.props;
+
+const inProducts = Astro.url.pathname.startsWith("/products");
 ---
 
 {
@@ -19,7 +24,14 @@ const { render = true, overlap = false } = Astro.props;
     <header class:list={["nav_wrap", overlap && "overlap"]}>
       <div class="nav_inner">
         <a class="nav_logo" href="/" aria-label={SITE_NAME}>
-          <Icon src={logo} variant="full-width" />
+          <Img
+            src={logo}
+            alt=""
+            transparent
+            loading="eager"
+            variant="constrained"
+            sizes="8rem"
+          />
         </a>
         <button
           class="nav_toggle"
@@ -33,9 +45,31 @@ const { render = true, overlap = false } = Astro.props;
         <nav class="nav_menu" id="nav-menu" aria-label="Main">
           <div class="nav_menu_inner">
             <ul class="nav_links">
-              <NavLink href="/">Home</NavLink>
-              <NavLink href="/example-components">Example Components</NavLink>
+              <li class="nav_item">
+                <a
+                  class="nav_link"
+                  href="/products/"
+                  aria-current={inProducts ? "true" : undefined}
+                >
+                  Products
+                  <Icon class="nav_chevron" src={chevron} variant="small" />
+                </a>
+                <ul class="nav_sub">
+                  <NavLink href="/products/fresh-fruit/">Fresh fruit</NavLink>
+                  <NavLink href="/products/frozen-fruit/">Frozen fruit</NavLink>
+                </ul>
+              </li>
+              <NavLink href="/food-safety-sustainability/">
+                Food Safety &amp; Sustainability
+              </NavLink>
+              <NavLink href="/about-us/">About Us</NavLink>
+              <NavLink href="/contact/">Contact</NavLink>
             </ul>
+            <div class="nav_cta">
+              <Button element="link" href="/contact/" icon>
+                Request a quote
+              </Button>
+            </div>
           </div>
         </nav>
       </div>
@@ -91,7 +125,7 @@ const { render = true, overlap = false } = Astro.props;
     });
 
     window
-      .matchMedia("(width >= 48rem)")
+      .matchMedia("(width >= 64rem)")
       .addEventListener("change", (event) => {
         if (event.matches) setOpen(false);
       });
@@ -109,7 +143,7 @@ const { render = true, overlap = false } = Astro.props;
       padding-inline: var(--site-margin);
       background-color: var(--background);
       color: var(--text);
-      border-bottom: var(--border-width) solid var(--border);
+      border-bottom: var(--border-width-thin) solid var(--border);
 
       &.overlap {
         position: fixed;
@@ -135,7 +169,8 @@ const { render = true, overlap = false } = Astro.props;
     .nav_logo {
       display: flex;
       align-items: center;
-      width: 6.5rem;
+      flex: none;
+      width: 7.75rem;
       transition: opacity var(--hover-duration) var(--hover-ease);
       @media (hover: hover) {
         &:hover {
@@ -150,8 +185,8 @@ const { render = true, overlap = false } = Astro.props;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      min-width: 2.75rem;
-      margin-right: calc((2.75rem - var(--_icon-width)) / -2);
+      min-width: var(--hit-target-min);
+      margin-right: calc((var(--hit-target-min) - var(--_icon-width)) / -2);
       color: inherit;
       border-radius: var(--radius-small);
       transition: opacity var(--hover-duration) var(--hover-ease);
@@ -205,7 +240,7 @@ const { render = true, overlap = false } = Astro.props;
       overflow-y: auto;
       overscroll-behavior: contain;
       background-color: var(--background);
-      border-bottom: var(--border-width) solid var(--border);
+      border-bottom: var(--border-width-thin) solid var(--border);
       transition:
         grid-template-rows var(--open-duration) var(--open-ease),
         visibility var(--open-duration) var(--open-ease);
@@ -230,33 +265,54 @@ const { render = true, overlap = false } = Astro.props;
     .nav_links {
       display: flex;
       flex-direction: column;
-      padding: var(--space-2) var(--site-margin) var(--space-4);
+      padding: var(--space-2) var(--site-margin) var(--space-2);
       font-size: var(--text-main);
-      font-weight: var(--primary-medium);
+      font-weight: var(--secondary-semibold);
       & > li + li {
-        border-top: var(--border-width) solid var(--border);
+        border-top: var(--border-width-thin) solid var(--border);
       }
     }
 
     .nav_link {
-      display: block;
+      display: flex;
+      align-items: center;
+      gap: var(--space-1);
+      min-height: var(--hit-target-min);
       padding-block: var(--space-3);
-      color: color-mix(in lab, currentcolor 60%, transparent);
+      color: var(--text);
       text-decoration: none;
-      text-underline-offset: 0.4em;
+      text-underline-offset: 0.5em;
+      text-decoration-color: var(--link-border);
       text-decoration-thickness: var(--border-width);
-      transition: color var(--hover-duration) var(--hover-ease);
-      &[aria-current="page"] {
-        color: var(--text);
+      transition: opacity var(--hover-duration) var(--hover-ease);
+      &[aria-current="page"],
+      &[aria-current="true"] {
+        text-decoration-line: underline;
       }
       @media (hover: hover) {
         &:hover {
-          color: var(--text);
+          opacity: 0.6;
         }
       }
     }
 
-    @media (width >= 48rem) {
+    .nav_chevron {
+      rotate: 90deg;
+    }
+
+    .nav_sub {
+      display: flex;
+      flex-direction: column;
+      padding-left: var(--space-4);
+      padding-bottom: var(--space-2);
+      font-size: var(--text-small);
+    }
+
+    .nav_cta {
+      padding: var(--space-3) var(--site-margin) var(--space-5);
+    }
+
+    @media (width >= 64rem) {
       .nav_toggle {
         display: none;
       }
@@ -264,12 +320,18 @@ const { render = true, overlap = false } = Astro.props;
       .nav_menu {
         position: static;
         display: block;
+        flex-grow: 1;
         visibility: visible;
+        overflow: visible;
         background-color: transparent;
         border-bottom: 0;
       }
 
       .nav_menu_inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--space-6);
         overflow: visible;
         opacity: 1;
       }
@@ -278,8 +340,10 @@ const { render = true, overlap = false } = Astro.props;
         flex-direction: row;
         flex-wrap: wrap;
         align-items: center;
+        justify-content: center;
+        flex-grow: 1;
         padding: 0;
-        gap: var(--space-4);
+        gap: var(--space-6);
         font-size: var(--text-small);
         & > li + li {
           border-top: 0;
@@ -288,9 +352,58 @@ const { render = true, overlap = false } = Astro.props;
 
       .nav_link {
         padding-block: 0;
-        &[aria-current="page"] {
-          text-decoration: underline;
+        min-height: var(--nav-height);
+      }
+
+      .nav_item {
+        position: relative;
+      }
+
+      .nav_chevron {
+        rotate: 90deg;
+      }
+
+      .nav_sub {
+        position: absolute;
+        top: calc(100% - var(--space-3));
+        left: calc(var(--space-4) * -1);
+        min-width: 14rem;
+        padding: var(--space-2);
+        gap: var(--space-1);
+        background-color: var(--background-3);
+        border-radius: var(--radius-main);
+        box-shadow: 0 var(--space-4) var(--space-6) calc(var(--space-3) * -1)
+          color-mix(in srgb, var(--shadow-500) 30%, transparent);
+        opacity: 0;
+        visibility: hidden;
+        translate: 0 calc(var(--space-1) * -1);
+        transition:
+          opacity var(--hover-duration) var(--hover-ease),
+          translate var(--hover-duration) var(--hover-ease),
+          visibility var(--hover-duration) var(--hover-ease);
+
+        .nav_link {
+          padding: var(--space-2) var(--space-3);
+          min-height: var(--hit-target-min);
+          border-radius: var(--radius-small);
+          @media (hover: hover) {
+            &:hover {
+              opacity: 1;
+              background-color: var(--background-2);
+            }
+          }
         }
+      }
+
+      .nav_item:is(:hover, :focus-within) > .nav_sub {
+        opacity: 1;
+        visibility: visible;
+        translate: 0 0;
+      }
+
+      .nav_cta {
+        padding: 0;
+        flex: none;
       }
     }
   }

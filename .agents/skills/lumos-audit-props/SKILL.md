@@ -25,7 +25,7 @@ Every fix is a judgement about wording or intent, and belongs to a person.
 
 **`render`** — the one prop every component shares. It should be first, and its
 sentence should be the same everywhere. Right now all 34 components agree on
-*"Set to `false` to omit the component."* That is
+_"Set to `false` to omit the component."_ That is
 worth keeping exactly.
 
 **Prop order, by majority.** For every pair of props appearing together in two
@@ -39,7 +39,7 @@ type definition is the source of truth, so changing an option never requires a
 tooltip edit. The audit checks:
 
 - that tooltips contain no `- \`value\` — description` option lists
-- that scalar defaults use a *"Defaults to `x`."* sentence rather than
+- that scalar defaults use a _"Defaults to `x`."_ sentence rather than
   `(default)`
 - whether a `number` prop states its range with `@min` / `@max` / `@int`, the
   way `Grid` and `Overlay` do
@@ -57,7 +57,7 @@ Fix the cheap ones directly: a missing tooltip, a `@min` that was never added,
 a destructuring order that got shuffled.
 
 **Order conflicts need a decision, not a rewrite.** When the report says
-*"tag before variant in 2 components, differs in Eyebrow"*, the question is
+_"tag before variant in 2 components, differs in Eyebrow"_, the question is
 which order is right for the library, not how to make the outlier match. If the
 minority is correct, change the majority and say so.
 
@@ -67,7 +67,7 @@ single declaration order to compare, because a discriminated union writes its
 branches in the order the variants demand. The script flags those as needing a
 hand read rather than asserting they are wrong.
 
-Anything the audit cannot see: whether the *names* are right. `emphasis` versus
+Anything the audit cannot see: whether the _names_ are right. `emphasis` versus
 `priority`, `preview` versus `open` — consistency of vocabulary is a
 conversation, and worth having while the report is open.
 

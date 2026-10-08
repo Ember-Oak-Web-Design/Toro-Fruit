@@ -863,17 +863,17 @@
 
 .weight-regular {
   font-family: var(--primary-family);
-  font-weight: var(--primary-regular);
+  font-weight: var(--secondary-regular);
 }
 
-.weight-medium {
+.weight-semibold {
   font-family: var(--primary-family);
-  font-weight: var(--primary-medium);
+  font-weight: var(--secondary-semibold);
 }
 
 .weight-bold {
   font-family: var(--primary-family);
-  font-weight: var(--primary-bold);
+  font-weight: var(--secondary-bold);
 }
 
 .text-transform-none {
@@ -923,6 +923,10 @@
 
 .background-2 {
   background-color: var(--background-2);
+}
+
+.background-3 {
+  background-color: var(--background-3);
 }
 
 .background-skeleton {

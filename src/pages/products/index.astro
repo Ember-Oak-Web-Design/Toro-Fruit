@@ -1,0 +1,161 @@
+---
+import Layout from "@/layouts/BaseLayout.astro";
+import Section from "@/components/wrapper/Section.astro";
+import Grid from "@/components/wrapper/Grid.astro";
+import HeroMain from "@/components/content/HeroMain.astro";
+import FruitCollage from "@/components/content/FruitCollage.astro";
+import ProductCard from "@/components/content/ProductCard.astro";
+import SectionCta from "@/components/section/SectionCta.astro";
+import { fruitImage } from "@/utils/fruit.ts";
+---
+
+<Layout
+  title="Fresh and frozen fruit"
+  description="Explore Toro Fruit's fresh fruit and vegetables, available season by season, and our frozen berries in branded retail packs and 12kg bulk boxes."
+  breadcrumbs={[
+    { name: "Home", href: "/" },
+    { name: "Products", href: "/products/" },
+  ]}
+>
+  {/* Hero */}
+  <Section theme="light" paddingTop="small" paddingBottom="small">
+    <HeroMain
+      crumbs={[{ label: "Home", href: "/" }, { label: "Products" }]}
+      heading="Fresh and frozen, <em>grown in South Africa.</em>"
+      text="Choose seasonal fresh fruit and vegetables, or frozen berries packed for retail and bulk supply. Every product comes from certified South African growers."
+      buttons={[{ label: "Request a quote", href: "/contact/", icon: true }]}
+    >
+      <FruitCollage
+        slot="visual"
+        eager
+        layers={[
+          { type: "circle", color: "sun-500", x: 40, y: 40, d: 520 },
+          { type: "circle", color: "berry-500", x: 520, y: 430, d: 80 },
+          { type: "circle", color: "leaf-500", x: 10, y: 80, d: 60 },
+          {
+            type: "cutout",
+            src: fruitImage("oranges"),
+            alt: "Oranges",
+            x: 80,
+            y: 130,
+            w: 400,
+            rotate: -4,
+          },
+          {
+            type: "cutout",
+            src: fruitImage("mangoes"),
+            alt: "Mangoes",
+            x: 40,
+            y: 380,
+            w: 300,
+            rotate: 6,
+          },
+          {
+            type: "cutout",
+            src: fruitImage("frozen-raspberries"),
+            alt: "Frozen raspberries",
+            x: 330,
+            y: 340,
+            w: 250,
+            rotate: -6,
+          },
+        ]}
+      />
+    </HeroMain>
+  </Section>
+
+  {/* Product lines */}
+  <Section theme="light" class="background-2">
+    <Grid medium={2}>
+      <ProductCard
+        theme="brand"
+        surface="2"
+        heading="Fresh Fruit"
+        text="Citrus, stone fruit, berries, melons, exotics and vegetables."
+        buttonLabel="Explore fresh fruit"
+        buttonHref="/products/fresh-fruit/"
+        layers={[
+          {
+            type: "cutout",
+            src: fruitImage("lemons"),
+            alt: "Lemon, whole and split",
+            x: 24,
+            y: 40,
+            anchor: "top-right",
+            w: 260,
+            rotate: 8,
+          },
+          {
+            type: "cutout",
+            src: fruitImage("grapefruit"),
+            alt: "Grapefruit, whole, halved and a segment",
+            x: -50,
+            y: 36,
+            anchor: "bottom-right",
+            w: 400,
+          },
+        ]}
+      />
+      <ProductCard
+        theme="dark"
+        surface="3"
+        heading="Frozen Fruit"
+        text="Raspberries, blueberries, mixed berries and strawberries in branded retail packs or 12kg bulk boxes."
+        buttonLabel="Explore frozen fruit"
+        buttonHref="/products/frozen-fruit/"
+        layers={[
+          {
+            type: "cutout",
+            src: fruitImage("strawberries"),
+            alt: "Strawberry, whole and halved",
+            x: 16,
+            y: 34,
+            anchor: "top-right",
+            w: 240,
+            rotate: -8,
+          },
+          {
+            type: "cutout",
+            src: fruitImage("frozen-raspberries"),
+            alt: "Frozen raspberries",
+            x: -24,
+            y: 40,
+            anchor: "bottom-right",
+            w: 340,
+          },
+        ]}
+      />
+    </Grid>
+  </Section>
+
+  <SectionCta
+    theme="brand"
+    heading="Not sure what you need? <em>Let’s talk.</em>"
+    text="Tell us your market, volumes and timing and we’ll recommend what’s in season."
+    secondary={{
+      label: "See what's in season",
+      href: "/products/fresh-fruit/#season-explorer",
+    }}
+    frameHeight={480}
+    layers={[
+      {
+        type: "cutout",
+        src: fruitImage("mangoes"),
+        x: -30,
+        y: -60,
+        anchor: "bottom-left",
+        w: 300,
+        rotate: -8,
+      },
+      {
+        type: "cutout",
+        src: fruitImage("blueberries"),
+        x: 60,
+        y: 60,
+        anchor: "top-right",
+        w: 240,
+        rotate: 8,
+      },
+    ]}
+  />
+</Layout>

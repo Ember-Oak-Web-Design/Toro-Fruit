@@ -1,0 +1,170 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Form from "@/components/form/Form.astro";
+import Fieldset from "@/components/form/Fieldset.astro";
+import Input from "@/components/form/Input.astro";
+import Select from "@/components/form/Select.astro";
+import Textarea from "@/components/form/Textarea.astro";
+import Button from "@/components/Button.astro";
+import ButtonWrapper from "@/components/wrapper/ButtonWrapper.astro";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import ProductPicker from "@/components/content/ProductPicker.astro";
+import { REGIONS } from "@/data/families.ts";
+
+interface Props extends HTMLAttributes<"div"> {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+}
+
+const { render = true, class: className, ...rest } = Astro.props;
+---
+
+{
+  render && (
+    <div
+      class:list={[
+        "contactform_wrap",
+        "theme-light",
+        "background-3",
+        className,
+      ]}
+      id="enquiry"
+      {...rest}
+    >
+      <div class="contactform_header margin-trim">
+        <Heading tag="h2" variant="h3">
+          Send an enquiry
+        </Heading>
+        <Paragraph variant="small">
+          All fields are required unless marked optional.
+        </Paragraph>
+      </div>
+      <p class="contactform_sent text-style-main" id="sent">
+        Thanks, your enquiry has been sent. Our export team will review it and
+        come back to you if it’s a good fit.
+      </p>
+      <Form
+        name="enquiry"
+        action="/api/contact/"
+        successMessage="Thanks, your enquiry has been sent. Our export team will review it and come back to you if it’s a good fit."
+        errorMessage="That did not send. Please try again, or email us directly."
+      >
+        <Fieldset legend="Your name" legendStyle="hidden" variant="columns">
+          <Input
+            variant="first-name"
+            label="First name"
+            name="first_name"
+            placeholder=" "
+            required
+          />
+          <Input
+            variant="last-name"
+            label="Surname"
+            name="last_name"
+            placeholder=" "
+            required
+          />
+        </Fieldset>
+        <Input
+          label="Company name"
+          name="company"
+          autocomplete="organization"
+          placeholder="The business you’re enquiring on behalf of"
+          required
+        />
+        <Fieldset
+          legend="Region and email"
+          legendStyle="hidden"
+          variant="columns"
+        >
+          <Select
+            label="Region"
+            name="region"
+            placeholder="Select your region"
+            options={[...REGIONS]}
+            required
+          />
+          <Input
+            variant="email"
+            label="Work email"
+            name="email"
+            placeholder="name@company.com"
+            required
+          />
+        </Fieldset>
+        <ProductPicker />
+        <Textarea
+          label="Message (optional)"
+          name="message"
+          placeholder="Volumes, pack formats, destination port, timing…"
+          minLines={5}
+        />
+        <div class="sr-only" aria-hidden="true">
+          <label>
+            Leave this field empty
+            <input
+              type="text"
+              name="website"
+              tabindex="-1"
+              autocomplete="off"
+            />
+          </label>
+        </div>
+        <Paragraph variant="small" class="contactform_note">
+          By sending this form you agree that Toro Fruit may contact you about
+          your enquiry. See our <a href="/privacy-policy/">privacy policy</a>.
+        </Paragraph>
+        <ButtonWrapper marginTop="0" class="justify-content-end">
+          <Button type="submit" icon>
+            Send enquiry
+          </Button>
+        </ButtonWrapper>
+      </Form>
+    </div>
+  )
+}
+
+<style is:global>
+  @layer components {
+    .contactform_wrap {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-5);
+      width: 100%;
+      padding: var(--space-6);
+      background-color: var(--background);
+      color: var(--text);
+      border-radius: var(--radius-large);
+      box-shadow: 0 var(--space-6) var(--space-7) calc(var(--space-6) * -1)
+        color-mix(in srgb, var(--shadow-500) 35%, transparent);
+
+      .contactform_header .text {
+        color: var(--text-2);
+      }
+
+      .contactform_note {
+        color: var(--text-2);
+      }
+
+      .contactform_note a {
+        text-decoration: underline;
+      }
+
+      .form_note {
+        border-color: var(--text);
+      }
+    }
+
+    .contactform_sent {
+      display: none;
+      padding: var(--space-4) var(--space-5);
+      border: var(--border-width) solid var(--text);
+      border-radius: var(--radius-main);
+
+      &:target {
+        display: block;
+      }
+    }
+  }
+</style>

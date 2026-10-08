@@ -1,0 +1,481 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import { getCollection } from "astro:content";
+import Choice from "@/components/form/Choice.astro";
+import Icon from "@/components/media/Icon.astro";
+import search from "@/assets/icons/search.svg";
+import chevron from "@/assets/icons/arrow.svg";
+import { FAMILIES, FROZEN_FAMILY } from "@/data/families.ts";
+import { byOrder } from "@/utils/fruit.ts";
+
+interface Props extends HTMLAttributes<"div"> {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** Field label. */
+  label?: string;
+}
+
+const {
+  render = true,
+  label = "Products of interest",
+  class: className,
+  ...rest
+} = Astro.props;
+
+const products = (await getCollection("products")).sort(byOrder);
+const frozen = (await getCollection("frozen")).sort(byOrder);
+
+const groups = [
+  ...FAMILIES.map((family) => ({
+    id: family.id as string,
+    name: family.name as string,
+    items: products
+      .filter((product) => product.data.family === family.id)
+      .map((product) => ({ id: product.id, name: product.data.name })),
+  })),
+  {
+    id: FROZEN_FAMILY.id as string,
+    name: FROZEN_FAMILY.name as string,
+    items: frozen.map((item) => ({ id: item.id, name: item.data.name })),
+  },
+];
+---
+
+{
+  render && (
+    <div class:list={["picker_wrap", className]} data-picker {...rest}>
+      <span class="field-label text-style-main" id="picker-label">
+        <span>{label}</span>
+        <span class="field-star" aria-hidden="true">
+          *
+        </span>
+      </span>
+      <details class="picker_details">
+        <summary
+          class="picker_control field-control"
+          aria-labelledby="picker-label"
+        >
+          <span class="picker_chips" data-picker-chips>
+            <span class="picker_empty">Choose one or more products</span>
+          </span>
+          <span class="picker_button text-style-small">
+            <span data-picker-button>Add products</span>
+            <Icon class="picker_chevron" src={chevron} variant="small" />
+          </span>
+          <input
+            class="picker_proxy"
+            type="text"
+            name="products-selected"
+            tabindex="-1"
+            aria-hidden="true"
+            data-picker-proxy
+            required
+          />
+        </summary>
+        <div class="picker_panel">
+          <div class="picker_toolbar">
+            <label class="picker_search">
+              <Icon class="picker_search_icon" src={search} variant="small" />
+              <input
+                class="field-control text-style-small"
+                type="search"
+                placeholder="Search fruit and vegetables"
+                aria-label="Search products"
+                data-picker-search
+              />
+            </label>
+            <button
+              class="picker_action text-style-small"
+              type="button"
+              data-picker-clear
+            >
+              Clear
+            </button>
+            <button
+              class="picker_action primary text-style-small"
+              type="button"
+              data-picker-done
+            >
+              Done
+            </button>
+          </div>
+          <div class="picker_groups">
+            {groups.map((group) => (
+              <fieldset
+                class:list={["picker_group", `family-${group.id}`]}
+                data-picker-group
+              >
+                <legend class="picker_legend text-style-small">
+                  <span class="picker_dot" aria-hidden="true" />
+                  {group.name}
+                </legend>
+                {group.items.map((item) => (
+                  <Choice
+                    name="products"
+                    value={item.id}
+                    label={item.name}
+                    data-name={item.name}
+                    data-family={group.id}
+                  />
+                ))}
+              </fieldset>
+            ))}
+          </div>
+        </div>
+      </details>
+      <input type="hidden" name="started" data-picker-started />
+    </div>
+  )
+}
+
+<script>
+  for (const picker of document.querySelectorAll<HTMLElement>(
+    "[data-picker]",
+  )) {
+    const details =
+      picker.querySelector<HTMLDetailsElement>(".picker_details")!;
+    const boxes = [
+      ...picker.querySelectorAll<HTMLInputElement>('input[name="products"]'),
+    ];
+    const chips = picker.querySelector<HTMLElement>("[data-picker-chips]")!;
+    const proxy = picker.querySelector<HTMLInputElement>(
+      "[data-picker-proxy]",
+    )!;
+    const button = picker.querySelector<HTMLElement>("[data-picker-button]")!;
+    const searchBox = picker.querySelector<HTMLInputElement>(
+      "[data-picker-search]",
+    )!;
+    const started = picker.querySelector<HTMLInputElement>(
+      "[data-picker-started]",
+    );
+    const form = picker.closest("form");
+    const SHOWN = 4;
+
+    const render = () => {
+      const chosen = boxes.filter((box) => box.checked);
+      chips.replaceChildren();
+
+      if (chosen.length === 0) {
+        const empty = document.createElement("span");
+        empty.className = "picker_empty";
+        empty.textContent = "Choose one or more products";
+        chips.append(empty);
+      }
+
+      for (const box of chosen.slice(0, SHOWN)) {
+        const chip = document.createElement("span");
+        chip.className = `picker_chip family-${box.dataset.family}`;
+        chip.append(document.createTextNode(box.dataset.name ?? box.value));
+        const remove = document.createElement("button");
+        remove.type = "button";
+        remove.className = "picker_remove";
+        remove.setAttribute("aria-label", `Remove ${box.dataset.name}`);
+        remove.textContent = "×";
+        remove.addEventListener("click", (event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          box.checked = false;
+          render();
+        });
+        chip.append(remove);
+        chips.append(chip);
+      }
+
+      if (chosen.length > SHOWN) {
+        const more = document.createElement("span");
+        more.className = "picker_more";
+        more.textContent = `+${chosen.length - SHOWN} more`;
+        chips.append(more);
+      }
+
+      button.textContent = chosen.length ? "Edit" : "Add products";
+      proxy.value = chosen.map((box) => box.value).join(",");
+      proxy.setCustomValidity(
+        chosen.length ? "" : "Please choose at least one product.",
+      );
+    };
+
+    picker.addEventListener("change", render);
+
+    searchBox.addEventListener("input", () => {
+      const query = searchBox.value.trim().toLowerCase();
+      for (const group of picker.querySelectorAll<HTMLElement>(
+        "[data-picker-group]",
+      )) {
+        let any = false;
+        for (const choice of group.querySelectorAll<HTMLElement>(
+          ".form-choice",
+        )) {
+          const match =
+            !query || (choice.textContent ?? "").toLowerCase().includes(query);
+          choice.hidden = !match;
+          any ||= match;
+        }
+        group.hidden = !any;
+      }
+    });
+
+    picker
+      .querySelector("[data-picker-clear]")
+      ?.addEventListener("click", () => {
+        for (const box of boxes) box.checked = false;
+        render();
+      });
+
+    picker
+      .querySelector("[data-picker-done]")
+      ?.addEventListener("click", () => {
+        details.open = false;
+      });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && details.open) {
+        details.open = false;
+        details.querySelector("summary")?.focus();
+      }
+    });
+
+    document.addEventListener("click", (event) => {
+      if (
+        details.open &&
+        event.target instanceof Node &&
+        !picker.contains(event.target)
+      ) {
+        details.open = false;
+      }
+    });
+
+    form?.addEventListener("reset", () => setTimeout(render));
+
+    for (const slug of new URLSearchParams(location.search).getAll("product")) {
+      const match = boxes.find((box) => box.value === slug);
+      if (match) match.checked = true;
+    }
+
+    if (started) started.value = String(Date.now());
+    render();
+  }
+</script>
+
+<style is:global>
+  @layer components {
+    .picker_wrap {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+      width: 100%;
+    }
+
+    .picker_control {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-3);
+      padding: var(--space-1) var(--space-1) var(--space-1) var(--space-3);
+      list-style: none;
+      cursor: pointer;
+
+      &::-webkit-details-marker {
+        display: none;
+      }
+    }
+
+    .picker_details[open] .picker_control {
+      border-color: var(--text);
+      outline: var(--focus-width) solid
+        color-mix(in srgb, var(--brand-500) 40%, transparent);
+    }
+
+    .picker_chips {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--space-1);
+      min-width: 0;
+    }
+
+    .picker_empty {
+      color: var(--text-2);
+    }
+
+    .picker_chip,
+    .picker_more {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-1);
+      min-height: var(--hit-target-min);
+      padding-inline: var(--space-3);
+      border-radius: var(--radius-round);
+      font-size: var(--text-small);
+      font-weight: var(--secondary-semibold);
+    }
+
+    .picker_chip {
+      background-color: var(--_family-tint);
+
+      &::before {
+        content: "";
+        width: var(--space-2);
+        aspect-ratio: 1;
+        background-color: var(--_family);
+        border-radius: var(--radius-round);
+      }
+    }
+
+    .picker_more {
+      background-color: var(--light-400);
+    }
+
+    .picker_remove {
+      display: grid;
+      place-items: center;
+      width: var(--space-4);
+      aspect-ratio: 1;
+      margin-right: calc(var(--space-1) * -1);
+      border-radius: var(--radius-round);
+      font-size: var(--text-main);
+      line-height: 1;
+    }
+
+    .picker_button {
+      flex: none;
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-1);
+      min-height: var(--hit-target-min);
+      padding-inline: var(--space-3);
+      background-color: var(--button-background);
+      color: var(--button-text);
+      border-radius: var(--radius-round);
+      font-weight: var(--secondary-semibold);
+    }
+
+    .picker_chevron {
+      rotate: 90deg;
+      transition: rotate var(--open-duration) var(--open-ease);
+    }
+
+    .picker_details[open] .picker_chevron {
+      rotate: -90deg;
+    }
+
+    .picker_proxy {
+      position: absolute;
+      inset: auto 0 0 0;
+      width: 100%;
+      height: 0;
+      padding: 0;
+      border: 0;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .picker_panel {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+      margin-top: var(--space-1);
+      padding: var(--space-5);
+      background-color: var(--background-3);
+      border: var(--border-width) solid var(--text);
+      border-radius: var(--radius-large);
+      box-shadow: 0 var(--space-5) var(--space-6) calc(var(--space-3) * -1)
+        color-mix(in srgb, var(--shadow-500) 30%, transparent);
+    }
+
+    .picker_toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--space-2);
+    }
+
+    .picker_search {
+      position: relative;
+      flex: 1 1 14rem;
+      display: block;
+
+      .field-control {
+        padding-left: var(--space-7);
+      }
+    }
+
+    .picker_search_icon {
+      position: absolute;
+      top: 50%;
+      left: var(--space-4);
+      translate: 0 -50%;
+      pointer-events: none;
+    }
+
+    .picker_action {
+      min-height: var(--hit-target-min);
+      padding-inline: var(--space-4);
+      border-radius: var(--radius-round);
+      box-shadow: inset 0 0 0 var(--border-width) var(--text);
+      font-weight: var(--secondary-semibold);
+      text-align: center;
+
+      &.primary {
+        background-color: var(--button-background);
+        color: var(--button-text);
+        box-shadow: none;
+      }
+    }
+
+    .picker_groups {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr));
+      gap: var(--space-5) var(--space-5);
+      max-height: 26rem;
+      overflow-y: auto;
+    }
+
+    .picker_group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1);
+      min-width: 0;
+      padding: 0;
+      border: 0;
+
+      &[hidden] {
+        display: none;
+      }
+    }
+
+    .picker_legend {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      margin-bottom: var(--space-1);
+      padding: 0;
+      color: var(--text-2);
+      font-weight: var(--secondary-bold);
+      letter-spacing: var(--letter-spacing-eyebrow);
+      text-transform: uppercase;
+    }
+
+    .picker_dot {
+      width: var(--space-2);
+      aspect-ratio: 1;
+      background-color: var(--_family);
+      border-radius: var(--radius-round);
+    }
+
+    @media (width >= 48rem) {
+      .picker_details {
+        position: relative;
+      }
+
+      .picker_panel {
+        position: absolute;
+        z-index: 20;
+        inset-inline: 0;
+        top: 100%;
+      }
+    }
+  }
+</style>

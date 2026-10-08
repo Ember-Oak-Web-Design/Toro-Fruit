@@ -1,0 +1,471 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Icon from "@/components/media/Icon.astro";
+import Img from "@/components/media/Img.astro";
+import Button from "@/components/Button.astro";
+import ButtonWrapper from "@/components/wrapper/ButtonWrapper.astro";
+import Eyebrow from "@/components/typography/Eyebrow.astro";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import SeasonWheel from "@/components/content/SeasonWheel.astro";
+import plus from "@/assets/icons/plus.svg";
+import type { FamilyId } from "@/data/families.ts";
+import { MONTH_SHORT, seasonLabel } from "@/utils/fruit.ts";
+
+interface Props extends HTMLAttributes<"details"> {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** Product id, also used as the anchor and the enquiry link. */
+  slug: string;
+  /** Product name. */
+  name: string;
+  /** Family the product belongs to. */
+  family: FamilyId;
+  /** Family name, shown under the product name. */
+  familyName: string;
+  /** Cut-out of the product. */
+  image: ImageMetadata;
+  /** Months the product is available, 1 to 12. */
+  months: number[];
+  /** One-line description shown in the panel. */
+  description: string;
+}
+
+const {
+  render = true,
+  slug,
+  name,
+  family,
+  familyName,
+  image,
+  months,
+  description,
+  class: className,
+  ...rest
+} = Astro.props;
+
+const season = seasonLabel(months);
+---
+
+{
+  render && (
+    <details
+      class:list={["fruitrow_wrap", `family-${family}`, className]}
+      id={slug}
+      name="fruit"
+      data-fruit-row
+      data-months={months.join(",")}
+      {...rest}
+    >
+      <summary class="fruitrow_summary">
+        <span class="fruitrow_disc">
+          <Img
+            class="fruitrow_image"
+            src={image}
+            alt=""
+            transparent
+            variant="constrained"
+            sizes="6rem"
+          />
+        </span>
+        <span class="fruitrow_name">
+          <span class="fruitrow_title text-style-h4">{name}</span>
+          <span class="fruitrow_family text-style-small">{familyName}</span>
+        </span>
+        <span
+          class="fruitrow_months"
+          role="img"
+          aria-label={`Available ${season.long}`}
+        >
+          {MONTH_SHORT.map((_, index) => (
+            <span
+              class:list={["fruitrow_cell", months.includes(index + 1) && "on"]}
+              data-month={index + 1}
+            />
+          ))}
+        </span>
+        <span class="fruitrow_season text-style-h5">
+          <em>{season.short}</em>
+        </span>
+        <span
+          class="fruitrow_status text-style-small"
+          hidden
+          data-fruit-status
+        />
+        <span class="fruitrow_toggle">
+          <Icon src={plus} variant="medium" />
+        </span>
+      </summary>
+      <div class="fruitrow_panel">
+        <div class="fruitrow_visual">
+          <Img
+            class="fruitrow_photo"
+            src={image}
+            alt={name}
+            transparent
+            variant="constrained"
+            sizes="20rem"
+          />
+        </div>
+        <div class="fruitrow_content margin-trim">
+          <Eyebrow>{familyName}</Eyebrow>
+          <Heading tag="h3" variant="h3">
+            {name}
+          </Heading>
+          <Paragraph variant="main" maxWidth={44}>
+            {description}
+          </Paragraph>
+          <dl class="fruitrow_facts">
+            <dt class="text-style-small">Season</dt>
+            <dd class="text-style-main">{season.long}</dd>
+          </dl>
+          <ButtonWrapper>
+            <Button element="link" href={`/contact/?product=${slug}`} icon>
+              Request {name.toLowerCase()} availability
+            </Button>
+          </ButtonWrapper>
+        </div>
+        <SeasonWheel
+          months={months}
+          label={season.short}
+          description={`${name} available ${season.long}`}
+        />
+      </div>
+    </details>
+  )
+}
+
+<style is:global>
+  @layer components {
+    .fruitrow_wrap {
+      --_cell-gap: var(--space-1);
+      interpolate-size: allow-keywords;
+      border-bottom: var(--border-width-thin) solid var(--light-600);
+    }
+
+    .fruitrow_summary {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: var(--media-disc-small) minmax(0, 1fr) var(
+          --hit-target-min
+        );
+      align-items: center;
+      column-gap: var(--space-4);
+      row-gap: var(--space-1);
+      min-height: var(--row-height);
+      padding-inline: var(--space-1);
+      border-radius: 0;
+      list-style: none;
+      cursor: pointer;
+      transition:
+        background-color var(--hover-duration) var(--hover-ease),
+        border-radius var(--hover-duration) var(--hover-ease);
+
+      &::-webkit-details-marker {
+        display: none;
+      }
+
+      @media (hover: hover) {
+        &:hover {
+          background-color: color-mix(
+            in srgb,
+            var(--light-200) 55%,
+            transparent
+          );
+          border-radius: var(--radius-main);
+        }
+      }
+    }
+
+    .fruitrow_wrap[open] > .fruitrow_summary {
+      background-color: var(--_family-tint);
+      border-radius: var(--radius-main);
+    }
+
+    .fruitrow_disc {
+      position: relative;
+      width: var(--media-disc-small);
+      aspect-ratio: 1;
+      background-color: var(--_family-tint);
+      border-radius: var(--radius-round);
+      box-shadow: inset 0 0 0 var(--border-width) transparent;
+      transition: box-shadow var(--hover-duration) var(--hover-ease);
+    }
+
+    .fruitrow_image {
+      position: absolute;
+      inset: -10%;
+      width: 120%;
+      height: 120%;
+      filter: drop-shadow(
+        0 var(--space-1) var(--space-2)
+          color-mix(in srgb, var(--shadow-500) 28%, transparent)
+      );
+      transition: transform calc(var(--hover-duration) * 1.5) var(--hover-ease);
+    }
+
+    .fruitrow_summary:is(:hover, :focus-visible) .fruitrow_disc,
+    .fruitrow_wrap[open] .fruitrow_disc {
+      box-shadow: inset 0 0 0 var(--border-width) var(--_family);
+    }
+
+    .fruitrow_summary:is(:hover, :focus-visible) .fruitrow_image,
+    .fruitrow_wrap[open] .fruitrow_image {
+      transform: scale(1.18) rotate(-6deg);
+    }
+
+    .fruitrow_name {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1);
+      min-width: 0;
+    }
+
+    .fruitrow_family {
+      color: var(--text-2);
+      font-weight: var(--secondary-semibold);
+    }
+
+    .fruitrow_months {
+      display: none;
+    }
+
+    .fruitrow_disc {
+      grid-column: 1;
+      grid-row: 1 / span 2;
+    }
+
+    .fruitrow_name {
+      grid-column: 2;
+      grid-row: 1;
+      align-self: end;
+    }
+
+    .fruitrow_season,
+    .fruitrow_status {
+      grid-column: 2;
+      grid-row: 2;
+      align-self: start;
+    }
+
+    .fruitrow_toggle {
+      grid-column: 3;
+      grid-row: 1 / span 2;
+    }
+
+    .fruitrow_season em {
+      font-weight: var(--primary-semibold);
+    }
+
+    .fruitrow_status {
+      justify-self: start;
+      padding: var(--space-1) var(--space-2);
+      border-radius: var(--radius-round);
+      font-weight: var(--secondary-bold);
+    }
+
+    .fruitrow_wrap[data-state="in"] .fruitrow_status {
+      background-color: var(--button-background);
+      color: var(--button-text);
+    }
+
+    .fruitrow_wrap[data-state="out"] .fruitrow_status {
+      box-shadow: inset 0 0 0 var(--border-width) var(--text-2);
+    }
+
+    .fruitrow_toggle {
+      display: grid;
+      place-items: center;
+      width: var(--hit-target-min);
+      aspect-ratio: 1;
+      border-radius: var(--radius-round);
+      box-shadow: inset 0 0 0 var(--border-width) var(--text);
+      transition:
+        background-color var(--hover-duration) var(--hover-ease),
+        color var(--hover-duration) var(--hover-ease);
+
+      .icon {
+        transition: rotate var(--open-duration) var(--open-ease);
+      }
+    }
+
+    .fruitrow_summary:is(:hover, :focus-visible) .fruitrow_toggle {
+      background-color: var(--_family);
+    }
+
+    .fruitrow_wrap[open] .fruitrow_toggle {
+      background-color: var(--button-background);
+      color: var(--button-text);
+      box-shadow: none;
+
+      .icon {
+        rotate: 45deg;
+      }
+    }
+
+    .fruitrow_wrap[data-state="out"]
+      > .fruitrow_summary
+      > :not(.fruitrow_months, .fruitrow_toggle) {
+      opacity: 0.4;
+    }
+
+    .fruitrow_wrap::details-content {
+      block-size: 0;
+      overflow: clip;
+      content-visibility: hidden;
+      transition:
+        block-size var(--open-duration) var(--open-ease),
+        content-visibility var(--open-duration) var(--open-ease) allow-discrete;
+    }
+
+    .fruitrow_wrap[open]::details-content {
+      block-size: auto;
+      content-visibility: visible;
+    }
+
+    .fruitrow_panel {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-6);
+      margin-block: var(--space-1) var(--space-3);
+      padding: var(--space-6) var(--space-5);
+      background-color: var(--_family-tint);
+      border-radius: var(--radius-large);
+    }
+
+    .fruitrow_visual {
+      position: relative;
+      display: grid;
+      place-items: center;
+      flex: none;
+      width: min(100%, 18rem);
+      aspect-ratio: 1;
+
+      &::before {
+        content: "";
+        position: absolute;
+        inset: 8%;
+        background-color: var(--_family);
+        border-radius: var(--radius-round);
+      }
+    }
+
+    .fruitrow_photo {
+      position: relative;
+      width: 115%;
+      max-width: none;
+      height: 70%;
+      filter: drop-shadow(
+        0 var(--space-4) var(--space-4)
+          color-mix(in srgb, var(--shadow-500) 32%, transparent)
+      );
+    }
+
+    .fruitrow_content {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+      min-width: 0;
+      flex-grow: 1;
+    }
+
+    .fruitrow_facts {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1);
+
+      dt {
+        color: var(--text-2);
+        font-weight: var(--secondary-bold);
+        letter-spacing: var(--letter-spacing-eyebrow);
+        text-transform: uppercase;
+      }
+
+      dd {
+        margin: 0;
+        font-weight: var(--secondary-semibold);
+      }
+    }
+
+    .fruitrow_content .button-wrapper {
+      margin-top: var(--space-3);
+    }
+
+    @media (width >= 48rem) {
+      .fruitrow_panel {
+        flex-direction: row;
+        padding: var(--space-6) var(--space-7);
+        gap: var(--space-7);
+      }
+
+      .fruitrow_visual {
+        width: 18.75rem;
+      }
+    }
+
+    /* Wide screens show the month strip beside the name. */
+    @media (width >= 64rem) {
+      .fruitrow_summary {
+        grid-template-columns:
+          var(--media-disc-small) minmax(0, 1fr) auto 9.375rem
+          var(--hit-target-min);
+        gap: var(--space-4);
+      }
+
+      .fruitrow_disc,
+      .fruitrow_name,
+      .fruitrow_toggle {
+        grid-row: 1;
+        align-self: center;
+      }
+
+      .fruitrow_season,
+      .fruitrow_status {
+        grid-row: 1;
+        align-self: center;
+      }
+
+      .fruitrow_months {
+        grid-column: 3;
+        grid-row: 1;
+        position: relative;
+        align-self: stretch;
+        display: grid;
+        grid-template-columns: repeat(12, var(--month-cell-width));
+        gap: var(--_cell-gap);
+        align-content: center;
+      }
+
+      .fruitrow_season,
+      .fruitrow_status {
+        grid-column: 4;
+      }
+
+      .fruitrow_toggle {
+        grid-column: 5;
+      }
+
+      .fruitrow_cell {
+        height: var(--month-cell-height);
+        background-color: var(--light-500);
+        border-radius: var(--radius-small);
+        transition: scale var(--hover-duration) var(--hover-ease);
+
+        &.on {
+          background-color: var(--_family);
+        }
+
+        &[data-picked] {
+          outline: var(--border-width) solid var(--text);
+          outline-offset: var(--border-width);
+        }
+      }
+
+      .fruitrow_summary:is(:hover, :focus-visible) .fruitrow_cell.on {
+        scale: 1 1.15;
+      }
+    }
+  }
+</style>

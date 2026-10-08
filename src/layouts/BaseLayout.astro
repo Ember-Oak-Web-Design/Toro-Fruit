@@ -1,10 +1,14 @@
 ---
 import "@/styles/global.css";
 import BaseHead from "@/components/utility/BaseHead.astro";
+import JsonLd from "@/components/utility/JsonLd.astro";
 import SkipLink from "@/components/global/SkipLink.astro";
 import Nav from "@/components/global/Nav.astro";
 import Footer from "@/components/global/Footer.astro";
 import type { SeoProps } from "@/types.ts";
+import { CONTACT_EMAIL, SITE_NAME, SITE_URL } from "@/consts.ts";
+
+type Breadcrumb = { name: string; href: string };
 
 type Props = SeoProps & {
   /** Theme for the whole page. `inherit` leaves the root defaults in place. */
@@ -15,15 +19,62 @@ type Props = SeoProps & {
    * `paddingTop="navoverlap"` to clear the bar.
    */
   overlap?: boolean;
+  /** Trail for nested pages, from the home page down. Adds BreadcrumbList data. */
+  breadcrumbs?: Breadcrumb[];
+  /** Extra structured data for this page. */
+  schema?: Record<string, unknown>[];
 };
 
-const { theme = "inherit", overlap = false, ...seo } = Astro.props;
+const {
+  theme = "inherit",
+  overlap = false,
+  breadcrumbs = [],
+  schema = [],
+  ...seo
+} = Astro.props;
+
+const absolute = (href: string) => new URL(href, SITE_URL).href;
+
+const siteData = [
+  {
+    "@type": "Organization",
+    "@id": `${SITE_URL}/#organization`,
+    name: SITE_NAME,
+    url: SITE_URL,
+    logo: absolute("/apple-touch-icon.png"),
+    email: CONTACT_EMAIL,
+    areaServed: ["Middle East", "Asia", "European Union", "United Kingdom"],
+  },
+  {
+    "@type": "WebSite",
+    "@id": `${SITE_URL}/#website`,
+    name: SITE_NAME,
+    url: SITE_URL,
+    publisher: { "@id": `${SITE_URL}/#organization` },
+  },
+];
+
+const trail =
+  breadcrumbs.length > 0
+    ? [
+        {
+          "@type": "BreadcrumbList",
+          itemListElement: breadcrumbs.map((crumb, index) => ({
+            "@type": "ListItem",
+            position: index + 1,
+            name: crumb.name,
+            item: absolute(crumb.href),
+          })),
+        },
+      ]
+    : [];
 ---
 
 <!doctype html>
 <html lang="en" class:list={[theme !== "inherit" && `theme-${theme}`]}>
   <head>
     <BaseHead {...seo} />
+    <JsonLd data={[...siteData, ...trail, ...schema]} />
     <slot name="head" />
   </head>
   <body>

@@ -1,0 +1,161 @@
+---
+import { getCollection, render } from "astro:content";
+import Layout from "@/layouts/BaseLayout.astro";
+import Section from "@/components/wrapper/Section.astro";
+import Eyebrow from "@/components/typography/Eyebrow.astro";
+import Heading from "@/components/typography/Heading.astro";
+import RichText from "@/components/typography/RichText.astro";
+import HeroMain from "@/components/content/HeroMain.astro";
+import FruitCollage from "@/components/content/FruitCollage.astro";
+import FruitMarquee from "@/components/content/FruitMarquee.astro";
+import SectionCta from "@/components/section/SectionCta.astro";
+import { FAMILIES } from "@/data/families.ts";
+import { fruitImage } from "@/utils/fruit.ts";
+
+const [story] = await getCollection("story", (entry) => !entry.data.draft);
+const Story = story ? (await render(story)).Content : undefined;
+
+const marquee = [...FAMILIES.map((family) => family.name), "Frozen berries"];
+---
+
+<Layout
+  title="About us"
+  description="Toro Fruit is a South African exporter of fresh and frozen fruit, connecting certified growers with importers, wholesalers and retailers around the world."
+  breadcrumbs={[
+    { name: "Home", href: "/" },
+    { name: "About us", href: "/about-us/" },
+  ]}
+>
+  {/* Hero */}
+  <Section
+    theme="dark"
+    class="background-3"
+    paddingTop="small"
+    paddingBottom="small"
+  >
+    <HeroMain
+      eyebrow="About us"
+      heading="South African fruit, <em>shipped with care.</em>"
+      text="Toro Fruit is a South African exporter of fresh and frozen fruit. We connect certified growers with importers, wholesalers and retailers around the world."
+      buttons={[
+        { label: "Explore our fruit", href: "/products/", icon: true },
+        { label: "Request a quote", href: "/contact/", emphasis: "secondary" },
+      ]}
+    >
+      <FruitCollage
+        slot="visual"
+        eager
+        layers={[
+          { type: "circle", color: "light-300", x: 40, y: 40, d: 520 },
+          { type: "circle", color: "sun-500", x: 470, y: 430, d: 110 },
+          { type: "circle", color: "leaf-500", x: 0, y: 470, d: 70 },
+          {
+            type: "cutout",
+            src: fruitImage("watermelon"),
+            alt: "Seedless watermelon, halved and sliced",
+            x: 70,
+            y: 90,
+            w: 330,
+            rotate: -6,
+          },
+          {
+            type: "cutout",
+            src: fruitImage("cherries"),
+            alt: "Cherries",
+            x: 390,
+            y: 70,
+            w: 160,
+            rotate: 10,
+          },
+          {
+            type: "cutout",
+            src: fruitImage("cantaloupe"),
+            alt: "Cantaloupe, whole and halved",
+            x: 60,
+            y: 320,
+            w: 300,
+            rotate: 6,
+          },
+          {
+            type: "cutout",
+            src: fruitImage("kumquats"),
+            alt: "Kumquats",
+            x: 330,
+            y: 330,
+            w: 230,
+            rotate: -8,
+          },
+          {
+            type: "cutout",
+            src: fruitImage("baby-pines"),
+            alt: "Baby pineapple",
+            x: 250,
+            y: 390,
+            w: 130,
+            rotate: 4,
+          },
+          {
+            type: "badge",
+            text: "Fresh &\nfrozen",
+            color: "sun-500",
+            x: 450,
+            y: 0,
+            d: 136,
+            rotate: 10,
+          },
+        ]}
+      />
+    </HeroMain>
+  </Section>
+
+  <FruitMarquee items={marquee} />
+
+  {/* Our story: supplied by the client */}
+  <Section theme="light" render={!!story}>
+    <Eyebrow>Our story</Eyebrow>
+    <Heading tag="h2" maxWidth={18}
+      ><Fragment set:html={story?.data.heading} /></Heading
+    >
+    <RichText variant="large" maxWidth={60}>
+      {Story && <Story />}
+    </RichText>
+  </Section>
+
+  <SectionCta
+    theme="brand"
+    class="background-2"
+    heading="Let’s grow <em>together.</em>"
+    text="Tell us which fruit you need, the volumes and your destination port. We’ll come back with availability and pricing."
+    secondary={{ label: "Contact us", href: "/contact/" }}
+    frameHeight={456}
+    layers={[
+      {
+        type: "cutout",
+        src: fruitImage("cantaloupe"),
+        x: -20,
+        y: -70,
+        anchor: "bottom-left",
+        w: 300,
+        rotate: -8,
+      },
+      {
+        type: "cutout",
+        src: fruitImage("watermelon"),
+        x: -10,
+        y: 40,
+        anchor: "top-right",
+        w: 260,
+        rotate: -12,
+      },
+      {
+        type: "cutout",
+        src: fruitImage("baby-pines"),
+        x: 110,
+        y: -90,
+        anchor: "bottom-right",
+        w: 110,
+        rotate: 10,
+      },
+    ]}
+  />
+</Layout>

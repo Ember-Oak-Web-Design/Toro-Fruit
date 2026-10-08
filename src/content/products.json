@@ -1,0 +1,281 @@
+[
+  {
+    "id": "lemons",
+    "name": "Lemons",
+    "family": "citrus",
+    "image": "lemons",
+    "months": [2, 3, 4, 5, 6, 7, 8, 9],
+    "description": "Bright, aromatic lemons for retail, food service and processing.",
+    "order": 1
+  },
+  {
+    "id": "grapefruit",
+    "name": "Grapefruit",
+    "family": "citrus",
+    "image": "grapefruit",
+    "months": [4, 5, 6],
+    "description": "Red and white grapefruit with a refreshing, tangy-sweet bite.",
+    "order": 2
+  },
+  {
+    "id": "clementines",
+    "name": "Clementines",
+    "family": "citrus",
+    "image": "mandarins",
+    "months": [4, 5, 6],
+    "description": "Easy-peel clementines: sweet, juicy and snack-sized.",
+    "order": 3
+  },
+  {
+    "id": "late-mandarins",
+    "name": "Late mandarins",
+    "family": "citrus",
+    "image": "mandarins",
+    "months": [6, 7, 8, 9],
+    "description": "Late-season mandarins that keep easy-peel citrus on the shelf for longer.",
+    "order": 4
+  },
+  {
+    "id": "navels",
+    "name": "Navels & late navels",
+    "family": "citrus",
+    "image": "oranges",
+    "months": [5, 6, 7, 8, 9],
+    "description": "Navel and late navel oranges with bright colour and sweet, juicy flesh.",
+    "order": 5
+  },
+  {
+    "id": "valencia-oranges",
+    "name": "Valencia oranges",
+    "family": "citrus",
+    "image": "oranges",
+    "months": [6, 7, 8, 9, 10],
+    "description": "Juicy Valencia-type oranges, ideal for fresh eating and juicing.",
+    "order": 6
+  },
+  {
+    "id": "kumquats",
+    "name": "Kumquats",
+    "family": "citrus",
+    "image": "kumquats",
+    "months": [5, 6, 7, 8],
+    "description": "Bite-sized kumquats, eaten whole: sweet skin and a tangy centre.",
+    "order": 7
+  },
+  {
+    "id": "apricots",
+    "name": "Apricots",
+    "family": "stone",
+    "image": "apricots",
+    "months": [11, 12],
+    "description": "Golden apricots with a delicate, honeyed flavour.",
+    "order": 8
+  },
+  {
+    "id": "peaches",
+    "name": "Peaches",
+    "family": "stone",
+    "image": "peaches",
+    "months": [9, 10, 11, 12, 1, 2, 3],
+    "description": "Fragrant peaches with soft, velvety skin.",
+    "order": 9
+  },
+  {
+    "id": "nectarines",
+    "name": "Nectarines",
+    "family": "stone",
+    "image": "nectarines",
+    "months": [9, 10, 11, 12, 1, 2, 3],
+    "description": "Smooth-skinned nectarines with sweet, juicy flesh.",
+    "order": 10
+  },
+  {
+    "id": "red-plums",
+    "name": "Red plums",
+    "family": "stone",
+    "image": "red-plums",
+    "months": [10, 11, 12, 1, 2, 3],
+    "description": "Deep-red plums, from honey-sweet to pleasantly tart.",
+    "order": 11
+  },
+  {
+    "id": "yellow-plums",
+    "name": "Yellow plums",
+    "family": "stone",
+    "image": "yellow-plums",
+    "months": [12, 1, 2],
+    "description": "Golden yellow plums with bright, sweet flesh.",
+    "order": 12
+  },
+  {
+    "id": "cherries",
+    "name": "Cherries",
+    "family": "stone",
+    "image": "cherries",
+    "months": [10, 11],
+    "description": "Glossy, deep-red cherries with a firm, sweet bite.",
+    "order": 13
+  },
+  {
+    "id": "strawberries",
+    "name": "Strawberries",
+    "family": "berries",
+    "image": "strawberries",
+    "months": [4, 5, 6, 7, 8, 9, 10, 11, 12],
+    "description": "Glossy, sweet strawberries bursting with flavour.",
+    "order": 14
+  },
+  {
+    "id": "blueberries",
+    "name": "Blueberries",
+    "family": "berries",
+    "image": "blueberries",
+    "months": [6, 7, 8, 9, 10, 11, 12],
+    "description": "Plump blueberries with a sweet, gently tart pop.",
+    "order": 15
+  },
+  {
+    "id": "raspberries",
+    "name": "Raspberries",
+    "family": "berries",
+    "image": "raspberries",
+    "months": [12, 1, 2, 3, 4],
+    "description": "Delicate raspberries with a bright, sweet-sharp flavour.",
+    "order": 16
+  },
+  {
+    "id": "blackberries",
+    "name": "Blackberries",
+    "family": "berries",
+    "image": "blackberries",
+    "months": [12, 1, 2],
+    "description": "Juicy blackberries with deep, wine-dark sweetness.",
+    "order": 17
+  },
+  {
+    "id": "golden-kiwi",
+    "name": "Golden kiwi",
+    "family": "exotics",
+    "image": "golden-kiwi",
+    "months": [2, 3, 4, 5],
+    "description": "Golden kiwifruit with smooth skin and sweet, tropical flesh.",
+    "order": 18
+  },
+  {
+    "id": "figs",
+    "name": "Figs",
+    "family": "exotics",
+    "image": "figs",
+    "months": [3, 4, 5],
+    "description": "Soft, jammy figs with honey-sweet flesh.",
+    "order": 19
+  },
+  {
+    "id": "lychees",
+    "name": "Lychees",
+    "family": "exotics",
+    "image": "lychees",
+    "months": [11, 12, 1],
+    "description": "Fragrant lychees with translucent, floral-sweet flesh.",
+    "order": 20
+  },
+  {
+    "id": "mangoes",
+    "name": "Mangoes",
+    "family": "exotics",
+    "image": "mangoes",
+    "months": [11, 12, 1],
+    "description": "Rich, aromatic mangoes with smooth, golden flesh.",
+    "order": 21
+  },
+  {
+    "id": "passion-fruit",
+    "name": "Passion fruit",
+    "family": "exotics",
+    "image": "passion-fruit",
+    "months": [1, 2, 3, 4],
+    "description": "Purple granadillas packed with tangy, aromatic pulp.",
+    "order": 22
+  },
+  {
+    "id": "baby-pines",
+    "name": "Baby pines",
+    "family": "exotics",
+    "image": "baby-pines",
+    "months": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+    "description": "Compact baby pineapples with intensely sweet, golden flesh.",
+    "order": 23
+  },
+  {
+    "id": "bahri-dates",
+    "name": "Bahri dates",
+    "family": "exotics",
+    "image": "bahri-dates",
+    "months": [1, 2, 3],
+    "description": "Fresh Bahri dates: crisp and honey-sweet, picked at the yellow stage.",
+    "order": 24
+  },
+  {
+    "id": "dry-dates",
+    "name": "Dry dates",
+    "family": "exotics",
+    "image": "dry-dates",
+    "months": [4, 5, 6, 7, 8],
+    "description": "Soft, rich dried dates with deep caramel sweetness.",
+    "order": 25
+  },
+  {
+    "id": "watermelon",
+    "name": "Watermelon (seedless)",
+    "family": "melons",
+    "image": "watermelon",
+    "months": [11, 12, 1, 2, 3, 4],
+    "description": "Seedless watermelon: crisp, juicy and refreshing.",
+    "order": 26
+  },
+  {
+    "id": "cantaloupe",
+    "name": "Cantaloupe",
+    "family": "melons",
+    "image": "cantaloupe",
+    "months": [12, 1, 2, 3, 4],
+    "description": "Fragrant cantaloupe melons with sweet orange flesh.",
+    "order": 27
+  },
+  {
+    "id": "grapes",
+    "name": "Grapes",
+    "family": "melons",
+    "image": "grapes",
+    "months": [11, 12, 1, 2, 3],
+    "description": "Crisp table grapes, sweet and juicy.",
+    "order": 28
+  },
+  {
+    "id": "butternuts",
+    "name": "Butternuts",
+    "family": "veg",
+    "image": "butternuts",
+    "months": [1],
+    "description": "Sweet, nutty butternut squash with smooth orange flesh.",
+    "order": 29
+  },
+  {
+    "id": "muscat-pumpkins",
+    "name": "Muscat pumpkins",
+    "family": "veg",
+    "image": "muscat-pumpkins",
+    "months": [2, 3, 4],
+    "description": "Deep-ribbed Muscat pumpkins with rich, sweet orange flesh.",
+    "order": 30
+  },
+  {
+    "id": "crown-prince-pumpkins",
+    "name": "Crown Prince pumpkins",
+    "family": "veg",
+    "image": "crown-prince-pumpkins",
+    "months": [2, 3, 4],
+    "description": "Blue-grey Crown Prince pumpkins with dense, nutty flesh.",
+    "order": 31
+  }
+]

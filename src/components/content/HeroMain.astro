@@ -1,0 +1,100 @@
+---
+import type { ComponentProps } from "astro/types";
+import ContentWrapper from "@/components/wrapper/ContentWrapper.astro";
+import ButtonWrapper from "@/components/wrapper/ButtonWrapper.astro";
+import Button from "@/components/Button.astro";
+import Eyebrow from "@/components/typography/Eyebrow.astro";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import Breadcrumb from "@/components/content/Breadcrumb.astro";
+import TrustList from "@/components/content/TrustList.astro";
+
+type ButtonLink = {
+  label: string;
+  href: string;
+  emphasis?: "primary" | "secondary";
+  icon?: boolean;
+};
+
+interface Props {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** Breadcrumb trail. Replaces the eyebrow. */
+  crumbs?: ComponentProps<typeof Breadcrumb>["crumbs"];
+  /** Eyebrow text. */
+  eyebrow?: string;
+  /** Eyebrow style. */
+  eyebrowVariant?: "default" | "tag";
+  /** Page heading. Wrap words in `<em>` for the italic accent. */
+  heading: string;
+  /** Lead paragraph. */
+  text: string;
+  /** Buttons under the lead. */
+  buttons?: ButtonLink[];
+  /** Points to list under the buttons, or across the bottom as a strip. */
+  trust?: string[];
+  /** Where the points sit. */
+  trustVariant?: "list" | "strip";
+  /** Show the visual first on large screens. */
+  reverse?: boolean;
+}
+
+const {
+  render = true,
+  crumbs,
+  eyebrow,
+  eyebrowVariant = "default",
+  heading,
+  text,
+  buttons = [],
+  trust = [],
+  trustVariant = "list",
+  reverse = false,
+} = Astro.props;
+---
+
+{
+  render && (
+    <>
+      <ContentWrapper variant="columns" reverse={reverse}>
+        <Fragment>
+          <Breadcrumb render={!!crumbs} crumbs={crumbs ?? []} />
+          <Eyebrow render={!crumbs && !!eyebrow} variant={eyebrowVariant}>
+            {eyebrow}
+          </Eyebrow>
+          <Heading tag="h1">
+            <Fragment set:html={heading} />
+          </Heading>
+          <Paragraph variant="large" maxWidth={36}>
+            {text}
+          </Paragraph>
+          <ButtonWrapper render={buttons.length > 0}>
+            {buttons.map((button) => (
+              <Button
+                element="link"
+                href={button.href}
+                emphasis={button.emphasis ?? "primary"}
+                icon={button.icon}
+              >
+                {button.label}
+              </Button>
+            ))}
+          </ButtonWrapper>
+          <TrustList
+            render={trustVariant === "list"}
+            items={trust}
+            class="margin-top-5"
+          />
+        </Fragment>
+        <Fragment slot="column2">
+          <slot name="visual" />
+        </Fragment>
+      </ContentWrapper>
+      <TrustList
+        render={trustVariant === "strip"}
+        items={trust}
+        variant="strip"
+      />
+    </>
+  )
+}

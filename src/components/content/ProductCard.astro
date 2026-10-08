@@ -1,0 +1,107 @@
+---
+import type { ComponentProps, HTMLAttributes } from "astro/types";
+import Button from "@/components/Button.astro";
+import ButtonWrapper from "@/components/wrapper/ButtonWrapper.astro";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import FruitCollage from "@/components/content/FruitCollage.astro";
+
+interface Props extends HTMLAttributes<"div"> {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** Card title. */
+  heading: string;
+  /** Card text. */
+  text: string;
+  /** Button label. */
+  buttonLabel: string;
+  /** Button destination. */
+  buttonHref: string;
+  /** Fruit placed on the card, measured on a 624 by 500 frame. */
+  layers: ComponentProps<typeof FruitCollage>["layers"];
+  /** Color theme of the card. */
+  theme?: "light" | "dark" | "brand";
+  /** Which of the theme's backgrounds the card uses. */
+  surface?: "2" | "3";
+}
+
+const {
+  render = true,
+  heading,
+  text,
+  buttonLabel,
+  buttonHref,
+  layers,
+  theme = "brand",
+  surface = "2",
+  class: className,
+  ...rest
+} = Astro.props;
+---
+
+{
+  render && (
+    <div
+      class:list={[
+        "product_wrap",
+        `theme-${theme}`,
+        `background-${surface}`,
+        className,
+      ]}
+      {...rest}
+    >
+      <FruitCollage variant="backdrop" frame={[624, 500]} layers={layers} />
+      <div class="product_content">
+        <div class="product_text margin-trim">
+          <Heading tag="h3" variant="h3">
+            {heading}
+          </Heading>
+          <Paragraph variant="main" maxWidth={30}>
+            {text}
+          </Paragraph>
+        </div>
+        <ButtonWrapper>
+          <Button element="link" href={buttonHref} icon>
+            {buttonLabel}
+          </Button>
+        </ButtonWrapper>
+      </div>
+    </div>
+  )
+}
+
+<style is:global>
+  @layer components {
+    .product_wrap {
+      position: relative;
+      display: flex;
+      min-height: var(--card-product-height);
+      height: 100%;
+      color: var(--text);
+      border-radius: var(--radius-large);
+      overflow: clip;
+    }
+
+    .product_content {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: var(--space-6);
+      width: 100%;
+      padding: var(--space-7);
+    }
+
+    .product_text {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+      max-width: 55%;
+    }
+
+    .product_wrap .button-wrapper {
+      margin-top: 0;
+    }
+  }
+</style>

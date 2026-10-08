@@ -1,0 +1,26 @@
+[
+  {
+    "id": "frozen-raspberries",
+    "name": "Frozen raspberries",
+    "pack": "500g retail pack",
+    "order": 1
+  },
+  {
+    "id": "frozen-blueberries",
+    "name": "Frozen blueberries",
+    "pack": "500g retail pack",
+    "order": 2
+  },
+  {
+    "id": "frozen-mixed-berries",
+    "name": "Frozen mixed berries",
+    "pack": "500g retail pack",
+    "order": 3
+  },
+  {
+    "id": "frozen-strawberries",
+    "name": "Frozen strawberries",
+    "pack": "750g retail pack",
+    "order": 4
+  }
+]

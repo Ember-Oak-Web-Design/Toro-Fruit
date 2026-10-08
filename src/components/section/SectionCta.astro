@@ -1,0 +1,100 @@
+---
+import type { ComponentProps } from "astro/types";
+import Section from "@/components/wrapper/Section.astro";
+import ContentWrapper from "@/components/wrapper/ContentWrapper.astro";
+import ButtonWrapper from "@/components/wrapper/ButtonWrapper.astro";
+import Button from "@/components/Button.astro";
+import Icon from "@/components/media/Icon.astro";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import FruitCollage from "@/components/content/FruitCollage.astro";
+import mail from "@/assets/icons/mail.svg";
+import { CONTACT_EMAIL } from "@/consts.ts";
+
+type Props = Pick<
+  ComponentProps<typeof Section>,
+  "render" | "theme" | "paddingTop" | "paddingBottom" | "class"
+> & {
+  /** Heading. Wrap words in `<em>` for the italic accent. */
+  heading: string;
+  /** Text under the heading. */
+  text: string;
+  /** Label of the quote button. */
+  buttonLabel?: string;
+  /** Second button style: the quote email, or a link elsewhere. */
+  secondary?: { label: string; href: string } | "email";
+  /** Fruit placed behind the content, measured on a 1440 wide frame. */
+  layers?: ComponentProps<typeof FruitCollage>["layers"];
+  /** Frame height of `layers`. Defaults to `480`. */
+  frameHeight?: number;
+};
+
+const {
+  render = true,
+  theme = "brand",
+  paddingTop,
+  paddingBottom,
+  heading,
+  text,
+  buttonLabel = "Request a quote",
+  secondary = "email",
+  layers = [],
+  frameHeight = 480,
+  class: className,
+} = Astro.props;
+---
+
+<Section
+  render={render}
+  theme={theme}
+  paddingTop={paddingTop}
+  paddingBottom={paddingBottom}
+  class:list={["cta_wrap", className]}
+>
+  <FruitCollage
+    slot="background"
+    variant="backdrop"
+    hideNarrow
+    frame={[1440, frameHeight]}
+    layers={layers}
+  />
+  <ContentWrapper centered>
+    <Heading tag="h2" variant="h1" maxWidth={11}>
+      <Fragment set:html={heading} />
+    </Heading>
+    <Paragraph variant="large" maxWidth={38}>{text}</Paragraph>
+    <ButtonWrapper>
+      <Button element="link" href="/contact/" icon>{buttonLabel}</Button>
+      {
+        secondary === "email" ? (
+          <Button
+            element="link"
+            href={`mailto:${CONTACT_EMAIL}`}
+            emphasis="secondary"
+          >
+            <Icon class="cta_mark" src={mail} variant="small" />
+            {CONTACT_EMAIL}
+          </Button>
+        ) : (
+          <Button element="link" href={secondary.href} emphasis="secondary">
+            {secondary.label}
+          </Button>
+        )
+      }
+    </ButtonWrapper>
+  </ContentWrapper>
+</Section>
+
+<style is:global>
+  @layer components {
+    .cta_wrap {
+      overflow: clip;
+
+      .cta_mark {
+        display: inline-block;
+        vertical-align: -0.15em;
+        margin-right: var(--space-1);
+      }
+    }
+  }
+</style>

@@ -1,0 +1,99 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Img from "@/components/media/Img.astro";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import type { FamilyId } from "@/data/families.ts";
+
+interface Props extends HTMLAttributes<"div"> {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** Card title. */
+  heading: string;
+  /** Items in the range, as one line. */
+  text: string;
+  /** Cut-out shown on the disc. */
+  image: ImageMetadata;
+  /** Product family, which sets the disc colour. */
+  family: FamilyId;
+}
+
+const {
+  render = true,
+  heading,
+  text,
+  image,
+  family,
+  class: className,
+  ...rest
+} = Astro.props;
+---
+
+{
+  render && (
+    <div class:list={["range_wrap", `family-${family}`, className]} {...rest}>
+      <div class="range_disc">
+        <Img
+          class="range_image"
+          src={image}
+          alt=""
+          transparent
+          variant="constrained"
+          sizes="10rem"
+        />
+      </div>
+      <div class="range_content margin-trim">
+        <Heading tag="h3" variant="h4">
+          {heading}
+        </Heading>
+        <Paragraph variant="small">{text}</Paragraph>
+      </div>
+    </div>
+  )
+}
+
+<style is:global>
+  @layer components {
+    .range_wrap {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+      height: 100%;
+      padding: var(--space-5);
+      background-color: var(--background-2);
+      border-radius: var(--radius-large);
+    }
+
+    .range_disc {
+      position: relative;
+      flex: none;
+      width: var(--media-disc);
+      aspect-ratio: 1;
+      background-color: var(--_family);
+      border-radius: var(--radius-round);
+    }
+
+    .range_image {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 125%;
+      height: 100%;
+      translate: -50% -50%;
+      filter: drop-shadow(
+        0 var(--space-2) var(--space-3)
+          color-mix(in srgb, var(--shadow-500) 30%, transparent)
+      );
+    }
+
+    .range_content {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1);
+
+      .text {
+        color: var(--text-2);
+      }
+    }
+  }
+</style>

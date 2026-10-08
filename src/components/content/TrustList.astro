@@ -1,0 +1,68 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Icon from "@/components/media/Icon.astro";
+import check from "@/assets/icons/check-circle.svg";
+
+interface Props extends HTMLAttributes<"ul"> {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** Points to list. */
+  items: string[];
+  /** Layout. */
+  variant?: "list" | "strip";
+}
+
+const {
+  render = true,
+  items,
+  variant = "list",
+  class: className,
+  ...rest
+} = Astro.props;
+---
+
+{
+  render && items.length > 0 && (
+    <ul
+      class:list={["trust_wrap", variant === "strip" && "strip", className]}
+      {...rest}
+    >
+      {items.map((item) => (
+        <li class="trust_item text-style-small">
+          <Icon class="trust_mark" src={check} variant="medium" />
+          <span>{item}</span>
+        </li>
+      ))}
+    </ul>
+  )
+}
+
+<style is:global>
+  @layer components {
+    .trust_wrap {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+
+      &.strip {
+        flex-direction: row;
+        flex-wrap: wrap;
+        width: 100%;
+        gap: var(--space-3) var(--space-8);
+        padding-top: var(--space-4);
+        border-top: var(--border-width) solid var(--text);
+      }
+    }
+
+    .trust_item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-weight: var(--secondary-semibold);
+    }
+
+    .trust_mark {
+      --_size: var(--icon-size);
+    }
+  }
+</style>

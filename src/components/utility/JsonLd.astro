@@ -1,0 +1,21 @@
+---
+interface Props {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** Structured data objects. Each becomes its own script. */
+  data?: Record<string, unknown>[];
+}
+
+const { render = true, data = [] } = Astro.props;
+---
+
+{
+  render &&
+    data.map((item) => (
+      <script
+        is:inline
+        type="application/ld+json"
+        set:html={JSON.stringify({ "@context": "https://schema.org", ...item })}
+      />
+    ))
+}

@@ -161,6 +161,46 @@
   inset: 0%;
 }
 
+.family-citrus {
+  --_family: var(--family-citrus);
+  --_family-tint: var(--family-citrus-tint);
+}
+
+.family-stone {
+  --_family: var(--family-stone);
+  --_family-tint: var(--family-stone-tint);
+}
+
+.family-berries {
+  --_family: var(--family-berries);
+  --_family-tint: var(--family-berries-tint);
+}
+
+.family-exotics {
+  --_family: var(--family-exotics);
+  --_family-tint: var(--family-exotics-tint);
+}
+
+.family-melons {
+  --_family: var(--family-melons);
+  --_family-tint: var(--family-melons-tint);
+}
+
+.family-veg {
+  --_family: var(--family-veg);
+  --_family-tint: var(--family-veg-tint);
+}
+
+.family-frozen {
+  --_family: var(--family-frozen);
+  --_family-tint: var(--family-frozen-tint);
+}
+
+.heading em {
+  font-style: italic;
+  font-weight: var(--primary-semibold);
+}
+
 .heading-accent strong {
   color: var(--heading-accent);
   font-weight: inherit;
@@ -182,6 +222,7 @@
 
 .field-label {
   display: flex;
+  font-weight: var(--secondary-semibold);
 }
 
 .field-star {
@@ -192,12 +233,12 @@
   --_field-pad-block: 0.75em;
   --_field-pad-inline: 1em;
   width: 100%;
-  min-height: calc(1lh + var(--_field-pad-block) * 2 + var(--border-width) * 2);
+  min-height: max(var(--field-height), calc(1lh + var(--_field-pad-block) * 2 + var(--border-width) * 2));
   padding: var(--_field-pad-block) var(--_field-pad-inline);
-  background-color: var(--background-2);
+  background-color: var(--light-200);
   color: inherit;
-  border: var(--border-width) solid transparent;
-  border-radius: var(--radius-small);
+  border: var(--border-width) solid var(--light-600);
+  border-radius: var(--radius-main);
   transition:
     background-color var(--hover-duration) var(--hover-ease),
     border-color var(--hover-duration) var(--hover-ease);
@@ -206,12 +247,16 @@
   }
   @media (hover: hover) {
     &:hover:not(:disabled) {
-      background-color: var(--background-3);
+      background-color: var(--light-300);
     }
   }
   &:focus-visible {
     border-color: var(--text);
-    outline-offset: var(--focus-offset-inner);
+    outline: var(--focus-width) solid color-mix(in srgb, var(--brand-500) 40%, transparent);
+    outline-offset: 0;
+  }
+  &:user-invalid {
+    border-color: var(--berry-500);
   }
   &:disabled {
     cursor: not-allowed;

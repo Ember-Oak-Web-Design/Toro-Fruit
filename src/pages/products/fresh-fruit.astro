@@ -1,0 +1,176 @@
+---
+import { getCollection } from "astro:content";
+import Layout from "@/layouts/BaseLayout.astro";
+import Section from "@/components/wrapper/Section.astro";
+import HeroMain from "@/components/content/HeroMain.astro";
+import FruitCollage from "@/components/content/FruitCollage.astro";
+import SectionHeader from "@/components/content/SectionHeader.astro";
+import FruitList from "@/components/content/FruitList.astro";
+import SectionCta from "@/components/section/SectionCta.astro";
+import { byOrder, fruitImage } from "@/utils/fruit.ts";
+
+const products = (await getCollection("products")).sort(byOrder);
+const vegetables = products.filter(
+  (product) => product.data.family === "veg",
+).length;
+const fruits = products.length - vegetables;
+
+const schema = [
+  {
+    "@type": "ItemList",
+    name: "Fresh fruit and vegetables",
+    itemListElement: products.map((product, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      item: {
+        "@type": "Product",
+        name: product.data.name,
+        description: product.data.description,
+      },
+    })),
+  },
+];
+---
+
+<Layout
+  title="Fresh fruit exporter: seasonal availability"
+  description="See which South African fresh fruit and vegetables are available each month, from citrus and stone fruit to berries, melons, exotics and pumpkins."
+  breadcrumbs={[
+    { name: "Home", href: "/" },
+    { name: "Products", href: "/products/" },
+    { name: "Fresh fruit", href: "/products/fresh-fruit/" },
+  ]}
+  schema={schema}
+>
+  {/* Hero */}
+  <Section
+    theme="brand"
+    class="background-2"
+    paddingTop="small"
+    paddingBottom="small"
+  >
+    <HeroMain
+      crumbs={[
+        { label: "Home", href: "/" },
+        { label: "Products", href: "/products/" },
+        { label: "Fresh fruit" },
+      ]}
+      heading="Fresh fruit, <em>season by season.</em>"
+      text="Citrus, stone fruit, berries, melons, exotics and vegetables from GlobalG.A.P.-certified South African growers. See what’s available when, then tell us what you need."
+      buttons={[
+        { label: "Explore the seasons", href: "#season-explorer", icon: true },
+        { label: "Request a quote", href: "/contact/", emphasis: "secondary" },
+      ]}
+    >
+      <FruitCollage
+        slot="visual"
+        eager
+        layers={[
+          { type: "circle", color: "light-300", x: 40, y: 40, d: 520 },
+          { type: "circle", color: "brand-500", x: 0, y: 430, d: 90 },
+          { type: "circle", color: "leaf-500", x: 520, y: 120, d: 56 },
+          {
+            type: "cutout",
+            src: fruitImage("baby-pines"),
+            alt: "Baby pineapple",
+            x: 110,
+            y: 50,
+            w: 175,
+            rotate: -6,
+          },
+          {
+            type: "cutout",
+            src: fruitImage("red-plums"),
+            alt: "Plums, whole, halved and sliced",
+            x: 270,
+            y: 140,
+            w: 300,
+            rotate: 8,
+          },
+          {
+            type: "cutout",
+            src: fruitImage("mandarins"),
+            alt: "Mandarins, whole and halved",
+            x: 90,
+            y: 320,
+            w: 320,
+          },
+          {
+            type: "cutout",
+            src: fruitImage("blueberries"),
+            alt: "Blueberries",
+            x: 330,
+            y: 380,
+            w: 240,
+            rotate: -8,
+          },
+          {
+            type: "cutout",
+            src: fruitImage("apricots"),
+            alt: "Apricots, whole and halved",
+            x: 350,
+            y: 460,
+            w: 220,
+            rotate: 6,
+          },
+          {
+            type: "badge",
+            text: `${fruits} fruits\n& ${vegetables} veg`,
+            color: "brand-500",
+            x: 440,
+            y: 0,
+            d: 144,
+            rotate: 10,
+          },
+        ]}
+      />
+    </HeroMain>
+  </Section>
+
+  {/* Season explorer */}
+  <Section theme="light" id="season-explorer">
+    <SectionHeader
+      eyebrow="Seasonality"
+      heading="Pick a month, <em>see what’s ripe.</em>"
+      text="Southern-hemisphere seasons mean South African fruit often arrives when northern supply is low. Tap any fruit for the details."
+    />
+    <FruitList />
+  </Section>
+
+  <SectionCta
+    theme="brand"
+    heading="Planning next season? <em>Let’s talk.</em>"
+    text="Tell us which fruit you need, the volumes and your destination port. We’ll come back with availability and pricing."
+    secondary={{ label: "View frozen fruit", href: "/products/frozen-fruit/" }}
+    frameHeight={480}
+    layers={[
+      {
+        type: "cutout",
+        src: fruitImage("raspberries"),
+        x: 70,
+        y: 50,
+        anchor: "top-right",
+        w: 220,
+        rotate: 12,
+      },
+      {
+        type: "cutout",
+        src: fruitImage("golden-kiwi"),
+        x: -30,
+        y: -60,
+        anchor: "bottom-left",
+        w: 300,
+        rotate: -10,
+      },
+      {
+        type: "cutout",
+        src: fruitImage("cherries"),
+        x: 260,
+        y: -90,
+        anchor: "bottom-right",
+        w: 200,
+        rotate: -14,
+      },
+    ]}
+  />
+</Layout>

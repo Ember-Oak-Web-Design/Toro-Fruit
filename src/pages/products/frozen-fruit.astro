@@ -1,0 +1,153 @@
+---
+import { getCollection } from "astro:content";
+import Layout from "@/layouts/BaseLayout.astro";
+import Section from "@/components/wrapper/Section.astro";
+import Grid from "@/components/wrapper/Grid.astro";
+import Card from "@/components/item/Card.astro";
+import HeroMain from "@/components/content/HeroMain.astro";
+import FruitCollage from "@/components/content/FruitCollage.astro";
+import SectionHeader from "@/components/content/SectionHeader.astro";
+import SectionCta from "@/components/section/SectionCta.astro";
+import { byOrder, fruitImage } from "@/utils/fruit.ts";
+
+const packs = (await getCollection("frozen")).sort(byOrder);
+---
+
+<Layout
+  title="Frozen fruit exporter: berries in retail and bulk packs"
+  description="Frozen raspberries, blueberries, mixed berries and strawberries from South Africa, in branded 500g and 750g retail packs or 12kg bulk boxes."
+  breadcrumbs={[
+    { name: "Home", href: "/" },
+    { name: "Products", href: "/products/" },
+    { name: "Frozen fruit", href: "/products/frozen-fruit/" },
+  ]}
+>
+  {/* Hero */}
+  <Section
+    theme="dark"
+    class="background-3"
+    paddingTop="small"
+    paddingBottom="small"
+  >
+    <HeroMain
+      crumbs={[
+        { label: "Home", href: "/" },
+        { label: "Products", href: "/products/" },
+        { label: "Frozen fruit" },
+      ]}
+      heading="Frozen fruit, <em>at its peak.</em>"
+      text="Raspberries, blueberries, mixed berries and strawberries in branded retail packs or 12kg bulk boxes."
+      buttons={[
+        { label: "Request a quote", href: "/contact/", icon: true },
+        {
+          label: "Fresh fruit",
+          href: "/products/fresh-fruit/",
+          emphasis: "secondary",
+        },
+      ]}
+    >
+      <FruitCollage
+        slot="visual"
+        eager
+        layers={[
+          { type: "circle", color: "light-300", x: 40, y: 40, d: 520 },
+          { type: "circle", color: "sun-500", x: 500, y: 440, d: 90 },
+          { type: "circle", color: "leaf-500", x: 10, y: 90, d: 60 },
+          {
+            type: "cutout",
+            src: fruitImage("frozen-raspberries"),
+            alt: "Frozen raspberries",
+            x: 80,
+            y: 150,
+            w: 420,
+            rotate: -4,
+          },
+          {
+            type: "cutout",
+            src: fruitImage("strawberries"),
+            alt: "Strawberries",
+            x: 330,
+            y: 70,
+            w: 230,
+            rotate: -8,
+          },
+          {
+            type: "cutout",
+            src: fruitImage("blueberries"),
+            alt: "Blueberries",
+            x: 290,
+            y: 400,
+            w: 260,
+            rotate: 6,
+          },
+          {
+            type: "badge",
+            text: "500g · 750g\n12kg bulk",
+            color: "sun-500",
+            x: 0,
+            y: 20,
+            d: 150,
+            rotate: -10,
+          },
+        ]}
+      />
+    </HeroMain>
+  </Section>
+
+  {/* Pack formats */}
+  <Section theme="light">
+    <SectionHeader
+      eyebrow="Pack formats"
+      heading="Branded retail packs & <em>12kg bulk boxes.</em>"
+      text="Choose the format that suits your shelf or your factory."
+    />
+    <Grid small={2} large={3}>
+      {
+        packs.map((pack) => (
+          <Card
+            eyebrow="Retail pack"
+            heading={pack.data.name}
+            text={`${pack.data.pack}, branded for retail.`}
+            buttonLabel="Enquire"
+            buttonHref={`/contact/?product=${pack.id}`}
+          />
+        ))
+      }
+      <Card
+        eyebrow="Bulk"
+        heading="Bulk boxes"
+        text="12kg bulk boxes for processors and food service."
+        buttonLabel="Enquire"
+        buttonHref="/contact/"
+      />
+    </Grid>
+  </Section>
+
+  <SectionCta
+    theme="brand"
+    heading="Need frozen berries for your range? <em>Let’s talk.</em>"
+    text="Tell us the formats, volumes and your destination port, and we’ll come back with availability and pricing."
+    secondary={{ label: "View fresh fruit", href: "/products/fresh-fruit/" }}
+    frameHeight={480}
+    layers={[
+      {
+        type: "cutout",
+        src: fruitImage("raspberries"),
+        x: -20,
+        y: -40,
+        anchor: "bottom-left",
+        w: 240,
+        rotate: -10,
+      },
+      {
+        type: "cutout",
+        src: fruitImage("strawberries"),
+        x: 50,
+        y: 50,
+        anchor: "top-right",
+        w: 240,
+        rotate: 10,
+      },
+    ]}
+  />
+</Layout>

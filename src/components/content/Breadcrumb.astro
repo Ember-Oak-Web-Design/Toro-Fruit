@@ -1,0 +1,73 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+type Crumb = { label: string; href?: string };
+
+interface Props extends HTMLAttributes<"nav"> {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** Trail from the home page down. The last crumb is the current page. */
+  crumbs: Crumb[];
+}
+
+const { render = true, crumbs, class: className, ...rest } = Astro.props;
+---
+
+{
+  render && crumbs.length > 0 && (
+    <nav
+      class:list={["breadcrumb_wrap", className]}
+      aria-label="Breadcrumb"
+      {...rest}
+    >
+      <ol class="breadcrumb_list text-style-small">
+        {crumbs.map((crumb, index) => (
+          <li class="breadcrumb_item">
+            {crumb.href && index < crumbs.length - 1 ? (
+              <a class="breadcrumb_link" href={crumb.href}>
+                {crumb.label}
+              </a>
+            ) : (
+              <span aria-current="page">{crumb.label}</span>
+            )}
+            {index < crumbs.length - 1 && (
+              <span class="breadcrumb_divider" aria-hidden="true">
+                /
+              </span>
+            )}
+          </li>
+        ))}
+      </ol>
+    </nav>
+  )
+}
+
+<style is:global>
+  @layer components {
+    .breadcrumb_list {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--space-1) var(--space-2);
+      font-weight: var(--secondary-semibold);
+    }
+
+    .breadcrumb_item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+
+    .breadcrumb_link {
+      text-decoration: underline;
+      text-underline-offset: 0.25em;
+      text-decoration-thickness: var(--border-width-thin);
+      transition: opacity var(--hover-duration) var(--hover-ease);
+      @media (hover: hover) {
+        &:hover {
+          opacity: 0.6;
+        }
+      }
+    }
+  }
+</style>
