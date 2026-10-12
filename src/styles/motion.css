@@ -32,14 +32,55 @@
   }
 
   @supports (animation-timeline: view()) {
-    main > .section:not(:first-child) :is(.eyebrow_wrap, .heading, .text, .button-wrapper, .collage_wrap:not(.backdrop), .grid > *, .step_wrap) {
-      animation: reveal-rise linear both;
-      animation-timeline: view();
-      animation-range: entry 0% entry 55%;
-    }
+    main > .section:not(:first-child) {
+      :is(.eyebrow_wrap, .heading, .text, .button-wrapper, .collage_wrap:not(.backdrop), .grid > *, .step_wrap) {
+        animation: reveal-rise linear both;
+        animation-timeline: view();
+        animation-range: entry 0% entry 55%;
+      }
 
-    main > .section:not(:first-child) .grid > * :is(.heading, .text) {
-      animation: none;
+      .heading {
+        animation-range: entry 4% entry 60%;
+      }
+      .text {
+        animation-range: entry 8% entry 65%;
+      }
+      .button-wrapper {
+        animation-range: entry 12% entry 70%;
+      }
+
+      .grid > * {
+        animation-name: reveal-card;
+      }
+      .grid > :nth-child(2) {
+        animation-range: entry 6% entry 61%;
+      }
+      .grid > :nth-child(3) {
+        animation-range: entry 12% entry 67%;
+      }
+      .grid > :nth-child(4) {
+        animation-range: entry 18% entry 73%;
+      }
+      .grid > :nth-child(n + 5) {
+        animation-range: entry 22% entry 77%;
+      }
+
+      .grid > * :is(.heading, .text, .eyebrow_wrap, .button-wrapper) {
+        animation: none;
+      }
     }
+  }
+}
+
+@keyframes reveal-card {
+  from {
+    opacity: 0;
+    translate: 0 calc(var(--reveal-distance) * 1.5);
+    scale: 0.96;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+    scale: 1;
   }
 }
