@@ -424,9 +424,8 @@ const groups = FAMILIES.map((family) => ({
 
       .fruitlist_group_header {
         grid-template-columns:
-          calc(
-            var(--media-disc-small) + var(--space-4) + var(--space-1)
-          ) minmax(0, 1fr) auto 9.375rem
+          calc(var(--media-disc-small) + var(--space-4) + var(--space-1))
+          minmax(0, 1fr) auto 9.375rem
           var(--hit-target-min);
         column-gap: var(--space-4);
       }

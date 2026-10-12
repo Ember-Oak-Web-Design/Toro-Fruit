@@ -1,0 +1,45 @@
+/* Entrance motion. The hero plays on load; everything below it rises as it scrolls into view. */
+
+@keyframes reveal-rise {
+  from {
+    opacity: 0;
+    translate: 0 var(--reveal-distance);
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  main > .section:first-child {
+    :is(.eyebrow_wrap, .heading, .text, .button-wrapper, .trust_wrap, .collage_wrap:not(.backdrop)) {
+      animation: reveal-rise var(--reveal-duration) var(--reveal-ease) both;
+    }
+
+    .heading {
+      animation-delay: 0.1s;
+    }
+    .text {
+      animation-delay: 0.2s;
+    }
+    .button-wrapper {
+      animation-delay: 0.3s;
+    }
+    .collage_wrap:not(.backdrop) {
+      animation-delay: 0.2s;
+    }
+  }
+
+  @supports (animation-timeline: view()) {
+    main > .section:not(:first-child) :is(.eyebrow_wrap, .heading, .text, .button-wrapper, .collage_wrap:not(.backdrop), .grid > *, .step_wrap) {
+      animation: reveal-rise linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 55%;
+    }
+
+    main > .section:not(:first-child) .grid > * :is(.heading, .text) {
+      animation: none;
+    }
+  }
+}

@@ -10,12 +10,15 @@ type Props = HTMLAttributes<"div"> & {
   label?: string;
   /** Travel direction. */
   direction?: "forwards" | "backwards";
+  /** Show the play / pause button. Defaults to `true`. */
+  toggle?: boolean;
 };
 
 const {
   render = true,
   label = "Marquee",
   direction = "forwards",
+  toggle: showToggle = true,
   class: className,
   ...rest
 } = Astro.props;
@@ -95,13 +98,15 @@ const locals = `--_count: ${count}`;
         </div>
       </div>
 
-      <Button
-        variant="play"
-        emphasis="secondary"
-        pressed={true}
-        class="marquee_toggle"
-        data-marquee-toggle
-      />
+      {showToggle && (
+        <Button
+          variant="play"
+          emphasis="secondary"
+          pressed={true}
+          class="marquee_toggle"
+          data-marquee-toggle
+        />
+      )}
     </div>
   )
 }

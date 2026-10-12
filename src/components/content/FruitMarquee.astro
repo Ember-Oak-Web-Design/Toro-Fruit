@@ -26,7 +26,7 @@ const {
       class:list={["fruitmarquee_band", `theme-${theme}`, className]}
       {...rest}
     >
-      <Marquee label="Our fruit" class="fruitmarquee_wrap">
+      <Marquee label="Our fruit" toggle={false} class="fruitmarquee_wrap">
         {items.flatMap((item) => [
           <em class="fruitmarquee_item text-style-h3">{item}</em>,
           <span class="fruitmarquee_dot" aria-hidden="true" />,
@@ -51,6 +51,8 @@ const {
       .fruitmarquee_item {
         font-style: italic;
         font-weight: var(--primary-semibold);
+        line-height: var(--line-height-large);
+        padding-block: var(--space-2);
         white-space: nowrap;
       }
 
